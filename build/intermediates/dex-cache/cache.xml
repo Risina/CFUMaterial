@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        jar="/Users/Risina/Library/Android/sdk/extras/android/m2repository/com/android/support/support-annotations/22.1.1/support-annotations-22.1.1.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="01d051a6bfb1218b1db2d3a5af0480ac2c25c42a">
+        <dex dex="/Users/Risina/Documents/Projects/CFUMaterial/app/build/intermediates/pre-dexed/debug/support-annotations-22.1.1-2dbb07d17f7825452f20cacf0dac88bd1b119bd1.jar" />
+    </item>
+    <item
+        jar="/Users/Risina/Documents/Projects/CFUMaterial/app/build/intermediates/exploded-aar/com.android.support/support-v4/22.1.1/libs/internal_impl-22.1.1.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="9e070ad32b2700b0343e8e0cccc437733d91ba3a">
+        <dex dex="/Users/Risina/Documents/Projects/CFUMaterial/app/build/intermediates/pre-dexed/debug/internal_impl-22.1.1-997da02b686eaa333bb5622bd6be2c4aa57130e3.jar" />
+    </item>
+    <item
+        jar="/Users/Risina/.gradle/caches/modules-2/files-2.1/com.google.code.gson/gson/2.3/5fc52c41ef0239d1093a1eb7c3697036183677ce/gson-2.3.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="5fc52c41ef0239d1093a1eb7c3697036183677ce">
+        <dex dex="/Users/Risina/Documents/Projects/CFUMaterial/app/build/intermediates/pre-dexed/debug/gson-2.3-1767614d128b568ce55c14afe751a6485b3d31a5.jar" />
+    </item>
+    <item
+        jar="/Users/Risina/Documents/Projects/CFUMaterial/app/build/intermediates/exploded-aar/com.android.support/support-v4/22.1.1/classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="c95ba8152923e4872e86a82cfcba9a51c0214328">
+        <dex dex="/Users/Risina/Documents/Projects/CFUMaterial/app/build/intermediates/pre-dexed/debug/classes-bfbd082efa5ef0150462640144fa5b9d0f26de2c.jar" />
+    </item>
+    <item
+        jar="/Users/Risina/.gradle/caches/modules-2/files-2.1/com.squareup.picasso/picasso/2.3.4/3b646ddbdac8a33fc45b64564011da81d23e4635/picasso-2.3.4.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="3b646ddbdac8a33fc45b64564011da81d23e4635">
+        <dex dex="/Users/Risina/Documents/Projects/CFUMaterial/app/build/intermediates/pre-dexed/debug/picasso-2.3.4-c62d332c3dbacf52deb4d11485ec5fc403ae87db.jar" />
+    </item>
+    <item
+        jar="/Users/Risina/Documents/Projects/CFUMaterial/app/build/intermediates/exploded-aar/com.google.android.gms/play-services/6.5.87/classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="dd9247ea0fabe8ee479638c4b4a23e93752be256">
+        <dex dex="/Users/Risina/Documents/Projects/CFUMaterial/app/build/intermediates/pre-dexed/debug/classes-13efacc58e30b3a12ac016621248d6a8c67c286b.jar" />
+    </item>
+    <item
+        jar="/Users/Risina/Documents/Projects/CFUMaterial/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/22.1.1/classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="a3ff3c506644c820eb2bdf06e8339f72be578551">
+        <dex dex="/Users/Risina/Documents/Projects/CFUMaterial/app/build/intermediates/pre-dexed/debug/classes-039db9c1a5bca442da8f1b4fcd6e5ff9acd281ec.jar" />
+    </item>
+
+</items>
