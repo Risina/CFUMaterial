@@ -101,6 +101,7 @@ public class AdSubmissionFragment extends BaseFragment {
         final Spinner transmissionSpinner = (Spinner)view.findViewById(R.id.transmission_spinner);
         final Spinner conditionSpinner = (Spinner)view.findViewById(R.id.condition_spinner);
         final Spinner fuelTypeSpinner = (Spinner)view.findViewById(R.id.fuelType_spinner);
+        final Spinner vehicleTypeSpinner = (Spinner)view.findViewById(R.id.vehicleType_spinner);
 
         Button submitButton = (Button)view.findViewById(R.id.submitButton);
 
@@ -109,6 +110,7 @@ public class AdSubmissionFragment extends BaseFragment {
         transmissionSpinner.setAdapter(new ListAdapter(getActivity(), CFConstants.TRANSMISSION_TYPES));
         conditionSpinner.setAdapter(new ListAdapter(getActivity(), CFConstants.CONDITION_TYPES));
         fuelTypeSpinner.setAdapter(new ListAdapter(getActivity(), CFConstants.FUEL_TYPES));
+        vehicleTypeSpinner.setAdapter(new ListAdapter(getActivity(), CFConstants.VEHICLE_TYPES));
 
 
         submitButton.setOnClickListener(new View.OnClickListener() {
@@ -121,14 +123,15 @@ public class AdSubmissionFragment extends BaseFragment {
                 ad.setModelYear(Short.parseShort(modelYearText.getText().toString()));
                 ad.setEngineCapacity(Integer.parseInt(engineCapacityText.getText().toString()));
                 ad.setMilage(Long.parseLong(mileageText.getText().toString()));
-                ad.setBrandId(safeLongToInt(brandSpinner.getSelectedItemId()));
-                ad.setBodyTypeId(safeLongToInt(bodyTypeSpinner.getSelectedItemId()));
-                ad.setTransmissionTypeId(safeLongToInt(transmissionSpinner.getSelectedItemId()));
-                ad.setFuelTypeId(safeLongToInt(fuelTypeSpinner.getSelectedItemId()));
-                ad.setConditionId(safeLongToInt(conditionSpinner.getSelectedItemId()));
+                ad.setBrandId(safeLongToInt(brandSpinner.getSelectedItemId())+1);
+                ad.setBodyTypeId(safeLongToInt(bodyTypeSpinner.getSelectedItemId())+1);
+                ad.setTransmissionTypeId(safeLongToInt(transmissionSpinner.getSelectedItemId())+1);
+                ad.setFuelTypeId(safeLongToInt(fuelTypeSpinner.getSelectedItemId())+1);
+                ad.setConditionId(safeLongToInt(conditionSpinner.getSelectedItemId())+1);
+                ad.setVehicleTypeId(safeLongToInt(vehicleTypeSpinner.getSelectedItemId())+1);
+                ad.setUserId(1);
 
                 new AdSubmissionAsyncTask(getActivity().getApplicationContext(), ad).execute();
-
             }
         });
 
@@ -255,10 +258,10 @@ public class AdSubmissionFragment extends BaseFragment {
         Context appContext;
         CFAdvertisementObj adObj;
 
-        public AdSubmissionAsyncTask(Context applicationContext, CFAdvertisementObj adobj)
+        public AdSubmissionAsyncTask(Context applicationContext, CFAdvertisementObj adObj)
         {
             appContext = applicationContext;
-            this.adObj = adobj;
+            this.adObj = adObj;
         }
         @Override
         protected void onPreExecute() {

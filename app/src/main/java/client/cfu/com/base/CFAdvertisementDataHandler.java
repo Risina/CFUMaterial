@@ -72,6 +72,7 @@ public class CFAdvertisementDataHandler {
 
     public Boolean addAdvertisement(CFAdvertisementObj advertisement) {
 
+
         Gson gson = new Gson();
         Bitmap bmp = null;
 

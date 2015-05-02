@@ -118,6 +118,30 @@ public class CFAdvertisementObj {
         return model;
     }
 
+    public CFAdvertisementObj(){}
+
+    public CFAdvertisementObj(Long id, String title, String description, long price, boolean isPriceNegotiable, String imageLocation, String model, short modelYear, int engineCapacity, long milage, Date createdDate, Date modifiedDate, int fuelTypeId, int transmissionTypeId, int conditionId, int bodyTypeId, int brandId, int vehicleTypeId, int userId) {
+        this.id = id;
+        this.title = title;
+        this.description = description;
+        this.price = price;
+        this.isPriceNegotiable = isPriceNegotiable;
+        this.imageLocation = imageLocation;
+        this.model = model;
+        this.modelYear = modelYear;
+        this.engineCapacity = engineCapacity;
+        this.milage = milage;
+        this.createdDate = createdDate;
+        this.modifiedDate = modifiedDate;
+        this.fuelTypeId = fuelTypeId;
+        this.transmissionTypeId = transmissionTypeId;
+        this.conditionId = conditionId;
+        this.bodyTypeId = bodyTypeId;
+        this.brandId = brandId;
+        this.vehicleTypeId = vehicleTypeId;
+        this.userId = userId;
+    }
+
     public void setModel(String model) {
         this.model = model;
     }

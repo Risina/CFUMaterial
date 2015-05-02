@@ -7,16 +7,16 @@ import android.net.NetworkInfo;
 import android.util.Base64;
 import android.util.Log;
 
+
 import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ByteArrayEntity;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
@@ -29,9 +29,8 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.net.HttpURLConnection;
-import java.net.URI;
 import java.net.URL;
-import java.util.*;
+import java.util.HashMap;
 
 import client.cfu.com.constants.CFConstants;
 
@@ -143,6 +142,10 @@ public class CFHttpManager {
         return "";
     }
 
+    protected static String getAdCount() {
+        return getData(CFConstants.SERVICE_ROOT + "CFUDBService/webresources/entities.advertisement/count", new HashMap<String, String>());
+    }
+
     protected static String addData(String Uri, String jsonString, Bitmap image) {
 //        // Create a new HttpClient and Post Header
 //        HttpClient httpclient = new DefaultHttpClient();
@@ -162,6 +165,7 @@ public class CFHttpManager {
 //            // TODO Auto-generated catch block
 //        }
 
+
         int TIMEOUT_MILLISEC = 10000;  // = 10 seconds
         HttpParams httpParams = new BasicHttpParams();
         HttpConnectionParams.setConnectionTimeout(httpParams, TIMEOUT_MILLISEC);
@@ -172,8 +176,8 @@ public class CFHttpManager {
         HttpResponse response = null;
         try {
             request.setEntity(new ByteArrayEntity(
-                    jsonString.toString().getBytes("UTF8")));
-        } catch (UnsupportedEncodingException e) {
+                    jsonString.getBytes()));
+        } catch (Exception e) {
             e.printStackTrace();
         }
         try {

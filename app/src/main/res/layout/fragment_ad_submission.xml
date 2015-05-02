@@ -84,6 +84,10 @@
             android:id="@+id/fuelType_spinner"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content" />
+        <Spinner
+            android:id="@+id/vehicleType_spinner"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" />
 
         <EditText
             android:layout_width="fill_parent"
