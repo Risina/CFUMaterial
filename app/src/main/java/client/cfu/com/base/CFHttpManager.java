@@ -147,24 +147,6 @@ public class CFHttpManager {
     }
 
     protected static String addData(String Uri, String jsonString, Bitmap image) {
-//        // Create a new HttpClient and Post Header
-//        HttpClient httpclient = new DefaultHttpClient();
-//        HttpPost httppost = new HttpPost(Uri);
-//
-//        try {
-//            // Add your data
-//
-//            httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-//
-//            // Execute HTTP Post Request
-//            HttpResponse response = httpclient.execute(httppost);
-//
-//        } catch (ClientProtocolException e) {
-//            // TODO Auto-generated catch block
-//        } catch (IOException e) {
-//            // TODO Auto-generated catch block
-//        }
-
 
         int TIMEOUT_MILLISEC = 10000;  // = 10 seconds
         HttpParams httpParams = new BasicHttpParams();
@@ -186,7 +168,13 @@ public class CFHttpManager {
             e.printStackTrace();
         }
 
-        return null;
+        assert response != null;
+        if(response.getStatusLine().getStatusCode() == 204 || response.getStatusLine().getStatusCode() == 200)
+        {
+            return CFConstants.STATUS_OK;
+        }
+
+        return CFConstants.STATUS_ERROR;
     }
 
 

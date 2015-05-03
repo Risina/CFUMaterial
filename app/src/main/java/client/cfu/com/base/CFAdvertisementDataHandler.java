@@ -77,7 +77,14 @@ public class CFAdvertisementDataHandler {
         Bitmap bmp = null;
 
         String result = CFHttpManager.addData(CFConstants.SERVICE_ROOT + "CFUDBService/webresources/entities.advertisement", gson.toJson(advertisement), bmp);
-        return true;
+
+        if(result.equals(CFConstants.STATUS_OK))
+        {
+            return true;
+        }
+
+        return false;
+
     }
 
     public Boolean addFavourite(BigInteger userId, BigInteger advertisementId) {

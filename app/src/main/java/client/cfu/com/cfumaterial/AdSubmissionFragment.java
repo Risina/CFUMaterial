@@ -18,6 +18,8 @@ import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 
+import com.andreabaccega.widget.FormEditText;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -89,7 +91,7 @@ public class AdSubmissionFragment extends BaseFragment {
         // Inflate the layout for this fragment
 
         View view = super.onCreateView(inflater, container, savedInstanceState);
-        final EditText titleText = (EditText)view.findViewById(R.id.titleText);
+        final FormEditText titleText = (FormEditText)view.findViewById(R.id.titleText);
         final EditText descriptionText = (EditText)view.findViewById(R.id.descriptionText);
         final EditText modelText = (EditText)view.findViewById(R.id.modelText);
         final EditText modelYearText = (EditText)view.findViewById(R.id.modelYearText);
@@ -116,22 +118,37 @@ public class AdSubmissionFragment extends BaseFragment {
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                CFAdvertisementObj ad = new CFAdvertisementObj();
-                ad.setTitle(titleText.getText().toString());
-                ad.setDescription(descriptionText.getText().toString());
-                ad.setModel(modelText.getText().toString());
-                ad.setModelYear(Short.parseShort(modelYearText.getText().toString()));
-                ad.setEngineCapacity(Integer.parseInt(engineCapacityText.getText().toString()));
-                ad.setMilage(Long.parseLong(mileageText.getText().toString()));
-                ad.setBrandId(safeLongToInt(brandSpinner.getSelectedItemId())+1);
-                ad.setBodyTypeId(safeLongToInt(bodyTypeSpinner.getSelectedItemId())+1);
-                ad.setTransmissionTypeId(safeLongToInt(transmissionSpinner.getSelectedItemId())+1);
-                ad.setFuelTypeId(safeLongToInt(fuelTypeSpinner.getSelectedItemId())+1);
-                ad.setConditionId(safeLongToInt(conditionSpinner.getSelectedItemId())+1);
-                ad.setVehicleTypeId(safeLongToInt(vehicleTypeSpinner.getSelectedItemId())+1);
-                ad.setUserId(1);
 
-                new AdSubmissionAsyncTask(getActivity().getApplicationContext(), ad).execute();
+
+                FormEditText[] allFields    = { titleText};
+
+
+                boolean allValid = true;
+                for (FormEditText field: allFields) {
+                    allValid = field.testValidity() && allValid;
+                }
+
+                if (allValid) {
+                    CFAdvertisementObj ad = new CFAdvertisementObj();
+                    ad.setTitle(titleText.getText().toString());
+                    ad.setDescription(descriptionText.getText().toString());
+                    ad.setModel(modelText.getText().toString());
+                    ad.setModelYear(Short.parseShort(modelYearText.getText().toString()));
+                    ad.setEngineCapacity(Integer.parseInt(engineCapacityText.getText().toString()));
+                    ad.setMilage(Long.parseLong(mileageText.getText().toString()));
+                    ad.setBrandId(safeLongToInt(brandSpinner.getSelectedItemId()) + 1);
+                    ad.setBodyTypeId(safeLongToInt(bodyTypeSpinner.getSelectedItemId()) + 1);
+                    ad.setTransmissionTypeId(safeLongToInt(transmissionSpinner.getSelectedItemId()) + 1);
+                    ad.setFuelTypeId(safeLongToInt(fuelTypeSpinner.getSelectedItemId()) + 1);
+                    ad.setConditionId(safeLongToInt(conditionSpinner.getSelectedItemId()) + 1);
+                    ad.setVehicleTypeId(safeLongToInt(vehicleTypeSpinner.getSelectedItemId()) + 1);
+                    ad.setUserId(1);
+
+                    new AdSubmissionAsyncTask(getActivity().getApplicationContext(), ad).execute();
+                } else {
+                    // EditText are going to appear with an exclamation mark and an explicative message.
+                }
+
             }
         });
 
@@ -254,7 +271,7 @@ public class AdSubmissionFragment extends BaseFragment {
 
     }
 
-    private class AdSubmissionAsyncTask extends AsyncTask<String, String, String> {
+    private class AdSubmissionAsyncTask extends AsyncTask<String, String, Boolean> {
         Context appContext;
         CFAdvertisementObj adObj;
 
@@ -269,15 +286,24 @@ public class AdSubmissionFragment extends BaseFragment {
         }
 
         @Override
-        protected String doInBackground(String... params) {
+        protected Boolean doInBackground(String... params) {
             CFAdvertisementDataHandler dataHandler = new CFAdvertisementDataHandler();
-            dataHandler.addAdvertisement(adObj);
-            return null;
+            return dataHandler.addAdvertisement(adObj);
         }
 
         @Override
-        protected void onPostExecute(String result) {
+        protected void onPostExecute(Boolean result) {
 
+            String toastText;
+            if(result)
+            {
+                toastText = getResources().getString(R.string.successful);
+            }
+            else {
+                toastText = getResources().getString(R.string.failed);
+            }
+
+            CFPopupHelper.showToast(appContext, toastText);
         }
     }
 

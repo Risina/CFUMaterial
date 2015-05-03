@@ -23,6 +23,13 @@
         <dex dex="/Users/Risina/Documents/Projects/CFUMaterial/app/build/intermediates/pre-dexed/debug/gson-2.3-1767614d128b568ce55c14afe751a6485b3d31a5.jar" />
     </item>
     <item
+        jar="/Users/Risina/Documents/Projects/CFUMaterial/app/build/intermediates/exploded-aar/com.android.support/support-v4/22.1.1/classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="c95ba8152923e4872e86a82cfcba9a51c0214328">
+        <dex dex="/Users/Risina/Documents/Projects/CFUMaterial/app/build/intermediates/pre-dexed/debug/classes-bfbd082efa5ef0150462640144fa5b9d0f26de2c.jar" />
+    </item>
+    <item
         jar="/Users/Risina/.gradle/caches/modules-2/files-2.1/com.squareup.picasso/picasso/2.3.4/3b646ddbdac8a33fc45b64564011da81d23e4635/picasso-2.3.4.jar"
         jumboMode="false"
         revision="21.1.2"
@@ -37,18 +44,18 @@
         <dex dex="/Users/Risina/Documents/Projects/CFUMaterial/app/build/intermediates/pre-dexed/debug/classes-13efacc58e30b3a12ac016621248d6a8c67c286b.jar" />
     </item>
     <item
-        jar="/Users/Risina/Documents/Projects/CFUMaterial/app/build/intermediates/exploded-aar/com.android.support/support-v4/22.1.1/classes.jar"
-        jumboMode="false"
-        revision="21.1.2"
-        sha1="c95ba8152923e4872e86a82cfcba9a51c0214328">
-        <dex dex="/Users/Risina/Documents/Projects/CFUMaterial/app/build/intermediates/pre-dexed/debug/classes-bfbd082efa5ef0150462640144fa5b9d0f26de2c.jar" />
-    </item>
-    <item
         jar="/Users/Risina/Documents/Projects/CFUMaterial/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/22.1.1/classes.jar"
         jumboMode="false"
         revision="21.1.2"
         sha1="a3ff3c506644c820eb2bdf06e8339f72be578551">
         <dex dex="/Users/Risina/Documents/Projects/CFUMaterial/app/build/intermediates/pre-dexed/debug/classes-039db9c1a5bca442da8f1b4fcd6e5ff9acd281ec.jar" />
+    </item>
+    <item
+        jar="/Users/Risina/Documents/Projects/CFUMaterial/app/build/intermediates/exploded-aar/com.andreabaccega/android-form-edittext/1.1.0/classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="352e84b094a60afce4e9efcf45887ee0c2b14e7d">
+        <dex dex="/Users/Risina/Documents/Projects/CFUMaterial/app/build/intermediates/pre-dexed/debug/classes-d2d338f0755ec9ec35082503cbb376b940546595.jar" />
     </item>
 
 </items>
