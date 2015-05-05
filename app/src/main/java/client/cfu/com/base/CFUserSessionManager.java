@@ -1,5 +1,6 @@
 package client.cfu.com.base;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -25,14 +26,33 @@ public class CFUserSessionManager {
 
         String status = CFHttpManager.authenticate(email, password);
 
-        if(status.equals(CFConstants.STATUS_OK)) {
+        if(!status.equals(CFConstants.STATUS_ERROR)) {
             SharedPreferences.Editor editor = applicationContext.getSharedPreferences("com.cfu.user", Context.MODE_PRIVATE).edit();
             editor.putString("userEmail", email);
             editor.putString("userPw", password);
+            editor.putString("userId", status);
             editor.apply();
-            return status;
+            return CFConstants.STATUS_OK;
         }
         return status;
+    }
+
+    public static boolean isUserLoggedIn(Context context){
+        SharedPreferences prefs = context.getSharedPreferences("com.cfu.user", Context.MODE_PRIVATE);
+        String userE = prefs.getString("userEmail", null);
+        String pw = prefs.getString("userPw", null);
+        String id = prefs.getString("userId", null);
+
+        return (userE!=null) && (pw!=null) && (id!=null);
+    }
+
+
+    public static long getUserId(Context context)
+    {
+        SharedPreferences prefs = context.getSharedPreferences("com.cfu.user", Context.MODE_PRIVATE);
+        String id = prefs.getString("userId", null);
+
+        return Long.parseLong(id);
     }
 
     public static CFUserSessionManager getInstance(Context appContext) {
@@ -51,8 +71,12 @@ public class CFUserSessionManager {
         return null;
     }
 
-    public void logoutUser() {
-        // TODO implement here
+    public static void logoutUser(Context context) {
+        SharedPreferences.Editor editor = context.getSharedPreferences("com.cfu.user", Context.MODE_PRIVATE).edit();
+        editor.putString("userEmail", null);
+        editor.putString("userPw", null);
+        editor.putString("userId", null);
+        editor.apply();
     }
 
 }

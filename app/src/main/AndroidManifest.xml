@@ -22,7 +22,7 @@
         </activity>
         <activity
             android:name=".DetailActivity"
-            android:label="Something"
+            android:label="Details"
             android:parentActivityName=".HomeActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

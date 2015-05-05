@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.util.Base64;
 import android.util.Log;
 
@@ -11,6 +12,7 @@ import android.util.Log;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.ResponseHandler;
+import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ByteArrayEntity;
@@ -29,6 +31,8 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
 import java.net.URL;
 import java.util.HashMap;
 
@@ -88,9 +92,12 @@ public class CFHttpManager {
             reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
 
             String line = reader.readLine();
-            if (line.equals(email)) {
-                status = CFConstants.STATUS_OK;
-            } else {
+
+            try{
+                status = Long.toString(Long.parseLong(line));
+            }
+            catch (NumberFormatException e)
+            {
                 status = CFConstants.STATUS_ERROR;
             }
 
@@ -192,6 +199,34 @@ public class CFHttpManager {
     protected static String removeAdvertisement(BigInteger advertisementId) {
         // TODO implement here
         return "";
+    }
+
+    protected static String deleteData(String uri)
+    {
+
+        int TIMEOUT_MILLISEC = 10000;  // = 10 seconds
+        HttpParams httpParams = new BasicHttpParams();
+        HttpConnectionParams.setConnectionTimeout(httpParams, TIMEOUT_MILLISEC);
+        HttpConnectionParams.setSoTimeout(httpParams, TIMEOUT_MILLISEC);
+        HttpClient client = new DefaultHttpClient(httpParams);
+
+        HttpDelete request = new HttpDelete(uri);
+
+        HttpResponse response = null;
+        try {
+            response = client.execute(request);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        assert response != null;
+        if(response.getStatusLine().getStatusCode() == 204 || response.getStatusLine().getStatusCode() == 200)
+        {
+            return CFConstants.STATUS_OK;
+        }
+
+        return CFConstants.STATUS_ERROR;
+
     }
 
 }

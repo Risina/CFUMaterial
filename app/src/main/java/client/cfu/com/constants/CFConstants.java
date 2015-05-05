@@ -9,7 +9,7 @@ import java.util.List;
 public class CFConstants {
     public static final String STATUS_OK = "status ok";
     public static final String STATUS_ERROR = "status error";
-    public static final String SERVICE_ROOT = "http://192.168.1.2:8255/";
+    public static final String SERVICE_ROOT = "http://192.168.1.4:8255/";
     public static List<JSONObject> LOCATIONS = null;
     public static List<JSONObject> BRANDS = null;
     public static List<JSONObject> TRANSMISSION_TYPES = null;

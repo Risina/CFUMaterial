@@ -38,6 +38,7 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseFrag
     }
 
     protected abstract int getLayoutResource();
+    protected abstract void closeDrawer();
 
     protected void setActionBarIcon(int iconRes) {
         toolbar.setNavigationIcon(iconRes);

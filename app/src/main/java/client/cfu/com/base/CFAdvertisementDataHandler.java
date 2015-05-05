@@ -17,6 +17,7 @@ import client.cfu.com.constants.CFConstants;
 import client.cfu.com.entities.CFAdvertisement;
 import client.cfu.com.entities.CFAdvertisementObj;
 import client.cfu.com.entities.CFEntityHelper;
+import client.cfu.com.entities.CFFavourite;
 
 /**
  * 
@@ -78,18 +79,34 @@ public class CFAdvertisementDataHandler {
 
         String result = CFHttpManager.addData(CFConstants.SERVICE_ROOT + "CFUDBService/webresources/entities.advertisement", gson.toJson(advertisement), bmp);
 
-        if(result.equals(CFConstants.STATUS_OK))
-        {
-            return true;
-        }
-
-        return false;
+        return result.equals(CFConstants.STATUS_OK);
 
     }
 
-    public Boolean addFavourite(BigInteger userId, BigInteger advertisementId) {
-        // TODO implement here
-        return null;
+    public Boolean addFavourite(CFFavourite favourite) {
+
+        Gson gson = new Gson();
+        Bitmap bmp = null;
+        String result = CFHttpManager.addData(CFConstants.SERVICE_ROOT + "CFUDBService/webresources/entities.favourite", gson.toJson(favourite), bmp);
+
+        return result.equals(CFConstants.STATUS_OK);
+    }
+
+    public Boolean deleteFavourite(CFFavourite favourite)
+    {
+       String result = CFHttpManager.deleteData(CFConstants.SERVICE_ROOT + "CFUDBService/webresources/entities.favourite/"+favourite.getId()+"/");
+       return result.equals(CFConstants.STATUS_OK);
+    }
+
+    public String getFavourite(Long userId, Long advertisementId)
+    {
+        String result = CFHttpManager.getData(CFConstants.SERVICE_ROOT+"CFUDBService/webresources/entities.favourite/get/"+userId+"/"+advertisementId, new HashMap<String, String>());
+
+        if(!result.equals(""))
+        {
+            return result;
+        }
+        return CFConstants.STATUS_ERROR;
     }
 
 

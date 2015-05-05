@@ -88,11 +88,7 @@ public class LoginFragment extends BaseFragment {
         String userEmail = prefs.getString("userEmail", null);
         String userPassword = prefs.getString("userPw", null);
 
-//        if(userEmail != null && userPassword != null) {
-//            Intent intent = new Intent(this, FrontActivity.class);
-//            startActivity(intent);
-//        }
-//        else {
+
             final EditText email = (EditText)view.findViewById(R.id.editTextEmail);
             final EditText password = (EditText)view.findViewById(R.id.editTextPassword);
             Button button = (Button)view.findViewById(R.id.loginButton);
@@ -106,7 +102,6 @@ public class LoginFragment extends BaseFragment {
                     asyncTask.execute(emailText, passwordText);
                 }
             });
-//        }
 
 
         // Inflate the layout for this fragment
@@ -174,10 +169,13 @@ public class LoginFragment extends BaseFragment {
         protected void onPostExecute(String result) {
 //            loadLocations();
 //            spinner.setVisibility(View.GONE);
-//            SharedPreferences prefs = getSharedPreferences("com.cfu.user", MODE_PRIVATE);
+//            SharedPreferences prefs = getActivity().getSharedPreferences("com.cfu.user", Activity.MODE_PRIVATE);
 //            String userE = prefs.getString("userEmail", "email");
 //            String pw = prefs.getString("userPw", "userPw");
+//
+//
             String toastString = "";
+
             if(result.equals(CFConstants.STATUS_OK)) {
                 toastString = getString(R.string.login_successful);
             }
@@ -185,6 +183,9 @@ public class LoginFragment extends BaseFragment {
                 toastString = getString(R.string.login_failed);
             }
             CFPopupHelper.showToast(appContext, toastString);
+            Activity activity = getActivity();
+            activity.finish();
+            activity.startActivity(activity.getIntent());
         }
     }
 

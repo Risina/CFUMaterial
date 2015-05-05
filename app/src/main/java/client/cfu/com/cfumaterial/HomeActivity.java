@@ -42,12 +42,15 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.mikepenz.materialdrawer.Drawer;
+import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
 import client.cfu.com.base.CFAdvertisementDataHandler;
 import client.cfu.com.base.CFMinorDataHandler;
+import client.cfu.com.base.CFUserSessionManager;
 import client.cfu.com.constants.CFConstants;
 import client.cfu.com.entities.CFAdvertisement;
 import client.cfu.com.util.CFPopupHelper;
@@ -64,11 +67,50 @@ public class HomeActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setActionBarIcon(R.drawable.ic_ab_drawer);
 
-        final Activity thisActivity = this;
-
         mDrawerList = (ListView)findViewById(R.id.menuList);
-        String[] listItems = new String[]{"One", "Two", "Three"};
-        ArrayAdapter adapter=new ArrayAdapter<String>(this,
+
+        boolean isLoggedIn = CFUserSessionManager.isUserLoggedIn(getApplicationContext());
+
+
+        setListAdapter(isLoggedIn);
+
+        drawer = (DrawerLayout) findViewById(R.id.drawer);
+        drawer.setDrawerShadow(R.drawable.drawer_shadow, Gravity.START);
+
+        CFPopupHelper.showProgressSpinner(this, View.VISIBLE);
+        new DataAsyncTask().execute();
+        new MinorDataAsyncTask().execute();
+
+//        new Drawer()
+//                .withActivity(this)
+//                .addDrawerItems(
+//
+//                )
+//                .withDrawerGravity(Gravity.END)
+//        .build();
+    }
+
+    public void setListAdapter(boolean isLoggedIn)
+    {   final String[] listItems;
+        if(!isLoggedIn)
+        {
+            listItems = new String[]{
+                    getResources().getString(R.string.home),
+                    getResources().getString(R.string.submitAd),
+                    getResources().getString(R.string.favourites),
+                    getResources().getString(R.string.login)
+            };
+        }
+        else {
+            listItems = new String[]{
+                    getResources().getString(R.string.home),
+                    getResources().getString(R.string.submitAd),
+                    getResources().getString(R.string.favourites),
+                    getResources().getString(R.string.logOut)
+            };
+        }
+
+        ArrayAdapter adapter=new ArrayAdapter<>(this,
                 android.R.layout.simple_list_item_1,
                 listItems);
         mDrawerList.setAdapter(adapter);
@@ -76,20 +118,9 @@ public class HomeActivity extends BaseActivity {
         mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                displayView(position);
+                displayView(position, listItems[position]);
             }
         });
-
-        drawer = (DrawerLayout) findViewById(R.id.drawer);
-        drawer.setDrawerShadow(R.drawable.drawer_shadow, Gravity.START);
-
-
-        CFPopupHelper.showProgressSpinner(this, View.VISIBLE);
-        new DataAsyncTask().execute();
-        new MinorDataAsyncTask().execute();
-
-
-
 
     }
 
@@ -106,16 +137,33 @@ public class HomeActivity extends BaseActivity {
         });
     }
 
-    public void displayView(int position) {
+    public void displayView(int position, String tag) {
         Fragment fragment = null;
 
         switch (position)
         {
             case 0:
-                fragment = new LoginFragment();
+                finish();
+                startActivity(getIntent());
                 break;
             case 1:
                 fragment = new AdSubmissionFragment();
+                break;
+            case 3:
+                if(tag.equals(getResources().getString(R.string.login)))
+                {
+                    fragment = new LoginFragment();
+                    setListAdapter(true);
+
+                }
+                else {
+                    CFUserSessionManager.logoutUser(getApplicationContext());
+                    setListAdapter(false);
+                    closeDrawer();
+
+                }
+                break;
+
         }
 
         if (fragment != null) {
@@ -132,6 +180,11 @@ public class HomeActivity extends BaseActivity {
 
             Log.e("MainActivity", "Error in creating fragment");
         }
+    }
+
+    @Override
+    public void closeDrawer(){
+        drawer.closeDrawer(mDrawerList);
     }
 
 
@@ -194,7 +247,7 @@ public class HomeActivity extends BaseActivity {
                         .inflate(R.layout.grid_item, viewGroup, false);
             }
 
-            String imageUrl = "http://lorempixel.com/800/600/sports/" + String.valueOf(i + 1);
+            String imageUrl = CFConstants.SERVICE_ROOT+"CFUDBService/images/cfu/"+String.valueOf(i + 1)+".jpg";
             view.setTag(imageUrl);
 
             ImageView image = (ImageView) view.findViewById(R.id.image);

@@ -24,7 +24,20 @@ public class CFPopupHelper extends DialogFragment{
                 Toast.LENGTH_LONG).show();
     }
 
-    public static AlertDialog alertHelper(final Activity activity, String text){
+    public static AlertDialog showAlertOneButton(final Activity activity, String text){
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+        builder.setMessage(text)
+                .setTitle(R.string.app_name);
+        builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+//                activity.getApplicationContext().startActivity(new Intent(Settings.ACTION_WIRELESS_SETTINGS));
+            }
+        });
+
+        return builder.create();
+    }
+
+    public static AlertDialog showAlertTwoButtons(final Activity activity, String text){
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         builder.setMessage(text)
                 .setTitle(R.string.app_name);

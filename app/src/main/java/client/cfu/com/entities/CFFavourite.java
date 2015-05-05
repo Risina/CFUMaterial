@@ -4,71 +4,44 @@
  * and open the template in the editor.
  */
 package client.cfu.com.entities;
-    
+
+import com.google.android.gms.internal.id;
+
 public class CFFavourite {
-    
-    private Long id;
-    
-    
-    private CFAdvertisement CFAdvertisementId;
-    
-    
-    private CFUser userId;
 
-    public CFFavourite() {
-    }
-
-    public CFFavourite(Long id) {
-        this.id = id;
-    }
-
-    public Long getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(long id) {
         this.id = id;
     }
 
-    public CFAdvertisement getAdvertisementId() {
-        return CFAdvertisementId;
+    private long id;
+
+    public long getAdvertisementId() {
+        return advertisementId;
     }
 
-    public void setAdvertisementId(CFAdvertisement CFAdvertisementId) {
-        this.CFAdvertisementId = CFAdvertisementId;
+    public void setAdvertisementId(long advertisementId) {
+        this.advertisementId = advertisementId;
     }
 
-    public CFUser getUserId() {
+    private long advertisementId;
+    private long userId;
+
+    public long getUserId() {
         return userId;
     }
 
-    public void setUserId(CFUser userId) {
+    public void setUserId(long userId) {
         this.userId = userId;
     }
 
-    
-    public int hashCode() {
-        int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
-        return hash;
+    public CFFavourite(long userId, long CFAdvertisementId, long id) {
+        this.userId = userId;
+        this.advertisementId = CFAdvertisementId;
     }
 
-    
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof CFFavourite)) {
-            return false;
-        }
-        CFFavourite other = (CFFavourite) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
-            return false;
-        }
-        return true;
-    }
-
-    
-    public String toString() {
-        return "Favourite[ id=" + id + " ]";
-    }
-    
+    public CFFavourite(){}
 }
