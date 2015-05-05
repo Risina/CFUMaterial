@@ -84,24 +84,20 @@ public class LoginFragment extends BaseFragment {
 
         View view = super.onCreateView(inflater, container, savedInstanceState);
 
-        SharedPreferences prefs = getActivity().getSharedPreferences("com.cfu.user", Activity.MODE_PRIVATE);
-        String userEmail = prefs.getString("userEmail", null);
-        String userPassword = prefs.getString("userPw", null);
 
+        final EditText email = (EditText) view.findViewById(R.id.editTextEmail);
+        final EditText password = (EditText) view.findViewById(R.id.editTextPassword);
+        Button button = (Button) view.findViewById(R.id.loginButton);
 
-            final EditText email = (EditText)view.findViewById(R.id.editTextEmail);
-            final EditText password = (EditText)view.findViewById(R.id.editTextPassword);
-            Button button = (Button)view.findViewById(R.id.loginButton);
-
-            button.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    String emailText = email.getText().toString();
-                    String passwordText = password.getText().toString();
-                    LoginAsyncTask asyncTask = new LoginAsyncTask(getActivity().getApplicationContext());
-                    asyncTask.execute(emailText, passwordText);
-                }
-            });
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String emailText = email.getText().toString();
+                String passwordText = password.getText().toString();
+                LoginAsyncTask asyncTask = new LoginAsyncTask(getActivity().getApplicationContext());
+                asyncTask.execute(emailText, passwordText);
+            }
+        });
 
 
         // Inflate the layout for this fragment
@@ -150,10 +146,10 @@ public class LoginFragment extends BaseFragment {
     private class LoginAsyncTask extends AsyncTask<String, String, String> {
         Context appContext;
 
-        public LoginAsyncTask(Context applicationContext)
-        {
+        public LoginAsyncTask(Context applicationContext) {
             appContext = applicationContext;
         }
+
         @Override
         protected void onPreExecute() {
 
@@ -176,10 +172,9 @@ public class LoginFragment extends BaseFragment {
 //
             String toastString = "";
 
-            if(result.equals(CFConstants.STATUS_OK)) {
+            if (result.equals(CFConstants.STATUS_OK)) {
                 toastString = getString(R.string.login_successful);
-            }
-            else {
+            } else {
                 toastString = getString(R.string.login_failed);
             }
             CFPopupHelper.showToast(appContext, toastString);

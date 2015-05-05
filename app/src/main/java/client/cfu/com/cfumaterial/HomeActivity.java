@@ -59,7 +59,7 @@ import client.cfu.com.util.CFPopupHelper;
 public class HomeActivity extends BaseActivity {
 
     private DrawerLayout drawer;
-    private List<CFAdvertisement> adList;
+//    private List<CFAdvertisement> adList;
     ListView mDrawerList;
 
     @Override
@@ -72,22 +72,17 @@ public class HomeActivity extends BaseActivity {
         boolean isLoggedIn = CFUserSessionManager.isUserLoggedIn(getApplicationContext());
 
 
-        setListAdapter(isLoggedIn);
 
         drawer = (DrawerLayout) findViewById(R.id.drawer);
         drawer.setDrawerShadow(R.drawable.drawer_shadow, Gravity.START);
 
         CFPopupHelper.showProgressSpinner(this, View.VISIBLE);
-        new DataAsyncTask().execute();
-        new MinorDataAsyncTask().execute();
+        setListAdapter(isLoggedIn);
 
-//        new Drawer()
-//                .withActivity(this)
-//                .addDrawerItems(
-//
-//                )
-//                .withDrawerGravity(Gravity.END)
-//        .build();
+
+
+//        new DataAsyncTask().execute();
+        new MinorDataAsyncTask().execute();
     }
 
     public void setListAdapter(boolean isLoggedIn)
@@ -114,6 +109,7 @@ public class HomeActivity extends BaseActivity {
                 android.R.layout.simple_list_item_1,
                 listItems);
         mDrawerList.setAdapter(adapter);
+        displayView(0, "");
 
         mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -124,18 +120,6 @@ public class HomeActivity extends BaseActivity {
 
     }
 
-    public void createList()
-    {
-        GridView gridView = (GridView) findViewById(R.id.gridView);
-        gridView.setAdapter(new GridViewAdapter(adList));
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                String url = (String) view.getTag();
-                DetailActivity.launch(HomeActivity.this, view.findViewById(R.id.image), url, adList.get(i));
-            }
-        });
-    }
 
     public void displayView(int position, String tag) {
         Fragment fragment = null;
@@ -143,8 +127,7 @@ public class HomeActivity extends BaseActivity {
         switch (position)
         {
             case 0:
-                finish();
-                startActivity(getIntent());
+                fragment = new HomeFragment();
                 break;
             case 1:
                 fragment = new AdSubmissionFragment();
@@ -163,7 +146,6 @@ public class HomeActivity extends BaseActivity {
 
                 }
                 break;
-
         }
 
         if (fragment != null) {
@@ -188,7 +170,8 @@ public class HomeActivity extends BaseActivity {
     }
 
 
-    @Override protected int getLayoutResource() {
+    @Override
+    protected int getLayoutResource() {
         return R.layout.activity_home;
     }
 
@@ -228,19 +211,23 @@ public class HomeActivity extends BaseActivity {
         }
 
 
-        @Override public int getCount() {
+        @Override
+        public int getCount() {
             return 10;
         }
 
-        @Override public Object getItem(int i) {
+        @Override
+        public Object getItem(int i) {
             return "Item " + String.valueOf(i + 1);
         }
 
-        @Override public long getItemId(int i) {
+        @Override
+        public long getItemId(int i) {
             return i;
         }
 
-        @Override public View getView(int i, View view, ViewGroup viewGroup) {
+        @Override
+        public View getView(int i, View view, ViewGroup viewGroup) {
 
             if (view == null) {
                 view = LayoutInflater.from(viewGroup.getContext())
@@ -262,27 +249,27 @@ public class HomeActivity extends BaseActivity {
         }
     }
 
-    private class DataAsyncTask extends AsyncTask<String, String, String> {
-
-        @Override
-        protected void onPreExecute() {
-
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-            CFAdvertisementDataHandler adh = new CFAdvertisementDataHandler();
-            adList = adh.getAdvertisements();
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            createList();
-//            CFPopupHelper.showProgressSpinner(HomeActivity.this, View.GONE);
-//            spinner.setVisibility(View.GONE);
-        }
-    }
+//    private class DataAsyncTask extends AsyncTask<String, String, String> {
+//
+//        @Override
+//        protected void onPreExecute() {
+//
+//        }
+//
+//        @Override
+//        protected String doInBackground(String... params) {
+//            CFAdvertisementDataHandler adh = new CFAdvertisementDataHandler();
+//            adList = adh.getAdvertisements();
+//            return null;
+//        }
+//
+//        @Override
+//        protected void onPostExecute(String result) {
+//            createList();
+////            CFPopupHelper.showProgressSpinner(HomeActivity.this, View.GONE);
+////            spinner.setVisibility(View.GONE);
+//        }
+//    }
 
 
     private class MinorDataAsyncTask extends AsyncTask<String, String, String> {
