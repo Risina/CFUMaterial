@@ -87,6 +87,8 @@ public class CFEntityHelper {
 
         } catch (JSONException e) {
             e.printStackTrace();
+            return null;
+
         }
 
         return ad;

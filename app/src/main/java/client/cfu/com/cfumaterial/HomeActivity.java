@@ -127,10 +127,13 @@ public class HomeActivity extends BaseActivity {
         switch (position)
         {
             case 0:
-                fragment = new HomeFragment();
+                fragment = HomeFragment.newInstance(false);
                 break;
             case 1:
                 fragment = new AdSubmissionFragment();
+                break;
+            case 2:
+                fragment = HomeFragment.newInstance(true);
                 break;
             case 3:
                 if(tag.equals(getResources().getString(R.string.login)))
@@ -196,81 +199,6 @@ public class HomeActivity extends BaseActivity {
     public void onFragmentInteraction(Uri uri) {
 
     }
-
-    private static class GridViewAdapter extends BaseAdapter {
-
-        Context context;
-        List<CFAdvertisement> items;
-
-//        public GridViewAdapter(){};
-        public GridViewAdapter(List<CFAdvertisement> items) {
-            super();
-//            super(context, textViewResourceId, items);
-//            this.context = context;
-            this.items = items;
-        }
-
-
-        @Override
-        public int getCount() {
-            return 10;
-        }
-
-        @Override
-        public Object getItem(int i) {
-            return "Item " + String.valueOf(i + 1);
-        }
-
-        @Override
-        public long getItemId(int i) {
-            return i;
-        }
-
-        @Override
-        public View getView(int i, View view, ViewGroup viewGroup) {
-
-            if (view == null) {
-                view = LayoutInflater.from(viewGroup.getContext())
-                        .inflate(R.layout.grid_item, viewGroup, false);
-            }
-
-            String imageUrl = CFConstants.SERVICE_ROOT+"CFUDBService/images/cfu/"+String.valueOf(i + 1)+".jpg";
-            view.setTag(imageUrl);
-
-            ImageView image = (ImageView) view.findViewById(R.id.image);
-            Picasso.with(view.getContext())
-                    .load(imageUrl)
-                    .into(image);
-
-            TextView text = (TextView) view.findViewById(R.id.text);
-            text.setText(items.get(i).getTitle());
-
-            return view;
-        }
-    }
-
-//    private class DataAsyncTask extends AsyncTask<String, String, String> {
-//
-//        @Override
-//        protected void onPreExecute() {
-//
-//        }
-//
-//        @Override
-//        protected String doInBackground(String... params) {
-//            CFAdvertisementDataHandler adh = new CFAdvertisementDataHandler();
-//            adList = adh.getAdvertisements();
-//            return null;
-//        }
-//
-//        @Override
-//        protected void onPostExecute(String result) {
-//            createList();
-////            CFPopupHelper.showProgressSpinner(HomeActivity.this, View.GONE);
-////            spinner.setVisibility(View.GONE);
-//        }
-//    }
-
 
     private class MinorDataAsyncTask extends AsyncTask<String, String, String> {
         @Override

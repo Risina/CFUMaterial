@@ -52,7 +52,12 @@ public class CFUserSessionManager {
         SharedPreferences prefs = context.getSharedPreferences("com.cfu.user", Context.MODE_PRIVATE);
         String id = prefs.getString("userId", null);
 
-        return Long.parseLong(id);
+        if(id!=null)
+        {
+           return Long.parseLong(id);
+        }
+
+        return 0;
     }
 
     public static CFUserSessionManager getInstance(Context appContext) {

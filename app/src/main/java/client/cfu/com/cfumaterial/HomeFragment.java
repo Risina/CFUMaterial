@@ -17,10 +17,12 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import client.cfu.com.base.CFAdvertisementDataHandler;
 import client.cfu.com.base.CFMinorDataHandler;
+import client.cfu.com.base.CFUserSessionManager;
 import client.cfu.com.constants.CFConstants;
 import client.cfu.com.entities.CFAdvertisement;
 import client.cfu.com.util.CFPopupHelper;
@@ -37,32 +39,25 @@ import client.cfu.com.util.CFPopupHelper;
 public class HomeFragment extends BaseFragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private static final String ARG_PARAM1 = "isFav";
+//    private static final String ARG_PARAM2 = "param2";
 
     // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
 
     private OnFragmentInteractionListener mListener;
 
     private List<CFAdvertisement> adList;
+//    private List<CFAdvertisement> favAdList;
     View view;
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment HomeFragment.
-     */
+    boolean isFavourites;
+
     // TODO: Rename and change types and number of parameters
-    public static HomeFragment newInstance(String param1, String param2) {
+    public static HomeFragment newInstance(boolean isFavourites) {
         HomeFragment fragment = new HomeFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putBoolean(ARG_PARAM1, isFavourites);
+//        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -75,8 +70,7 @@ public class HomeFragment extends BaseFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            isFavourites = getArguments().getBoolean(ARG_PARAM1);
         }
     }
 
@@ -85,8 +79,23 @@ public class HomeFragment extends BaseFragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 
-        view = super.onCreateView(inflater, container, savedInstanceState);;
-        new DataAsyncTask().execute();
+        view = super.onCreateView(inflater, container, savedInstanceState);
+
+        if(isFavourites){
+
+            if(CFUserSessionManager.isUserLoggedIn(getActivity().getApplicationContext()))
+            {
+                new FavouriteAsyncTask().execute();
+            }
+            else {
+                CFPopupHelper.showToast(getActivity().getApplicationContext(), "You need to login to add/view favourites");
+            }
+
+        }
+        else {
+            new DataAsyncTask().execute();
+        }
+
         return view;
     }
 
@@ -147,7 +156,7 @@ public class HomeFragment extends BaseFragment {
         public void onFragmentInteraction(Uri uri);
     }
 
-    private static class GridViewAdapter extends BaseAdapter {
+    private class GridViewAdapter extends BaseAdapter {
 
         Context context;
         List<CFAdvertisement> items;
@@ -163,7 +172,7 @@ public class HomeFragment extends BaseFragment {
 
         @Override
         public int getCount() {
-            return 10;
+            return adList.size();
         }
 
         @Override
@@ -202,14 +211,11 @@ public class HomeFragment extends BaseFragment {
     private class DataAsyncTask extends AsyncTask<String, String, String> {
 
         @Override
-        protected void onPreExecute() {
-
-        }
-
-        @Override
         protected String doInBackground(String... params) {
             CFAdvertisementDataHandler adh = new CFAdvertisementDataHandler();
             adList = adh.getAdvertisements();
+//            List<Long> list = adh.getFavourites(Long.parseLong("1"));
+
             return null;
         }
 
@@ -221,32 +227,28 @@ public class HomeFragment extends BaseFragment {
         }
     }
 
+    private class FavouriteAsyncTask extends AsyncTask<String, String, String> {
 
-//    private class MinorDataAsyncTask extends AsyncTask<String, String, String> {
-//        @Override
-//        protected void onPreExecute() {
-//
-//        }
-//
-//        @Override
-//        protected String doInBackground(String... params) {
-//
-//            CFConstants.LOCATIONS = CFMinorDataHandler.getLocations();
-//            CFConstants.BODY_TYPES = CFMinorDataHandler.getBodyTypes();
-//            CFConstants.BRANDS = CFMinorDataHandler.getBrands();
-//            CFConstants.CONDITION_TYPES = CFMinorDataHandler.getConditions();
-//            CFConstants.FUEL_TYPES = CFMinorDataHandler.getFuelTypes();
-//            CFConstants.TRANSMISSION_TYPES = CFMinorDataHandler.getTransmissionTypes();
-//            CFConstants.VEHICLE_TYPES = CFMinorDataHandler.getVehicleTypes();
-//            return null;
-//        }
-//
-//        @Override
-//        protected void onPostExecute(String result) {
-////            startActivities();
+        @Override
+        protected String doInBackground(String... params) {
+            CFAdvertisementDataHandler adh = new CFAdvertisementDataHandler();
+            List<Long> list = adh.getFavourites(CFUserSessionManager.getUserId(getActivity().getApplicationContext()));
+
+            adList = new ArrayList<>();
+                for(Long adId: list)
+                {
+                    adList.add(adh.getAdvertisementById(adId));
+                }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            createList(view);
 //            CFPopupHelper.showProgressSpinner(HomeActivity.this, View.GONE);
-////            spinner.setVisibility(View.GONE);
-//        }
-//    }
+//            spinner.setVisibility(View.GONE);
+        }
+    }
 
 }

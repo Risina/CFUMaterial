@@ -13,6 +13,7 @@ import java.math.BigInteger;
 import java.util.*;
 
 
+import client.cfu.com.cfumaterial.LoginFragment;
 import client.cfu.com.constants.CFConstants;
 import client.cfu.com.entities.CFAdvertisement;
 import client.cfu.com.entities.CFAdvertisementObj;
@@ -34,12 +35,6 @@ public class CFAdvertisementDataHandler {
 
 
 
-
-    public CFAdvertisement getAdvertisementById(BigInteger id) {
-        // TODO implement here
-        return null;
-    }
-
     public List<CFAdvertisement> getAdvertisements() {
         List<CFAdvertisement> advertisementList = new ArrayList<>();
 
@@ -51,6 +46,22 @@ public class CFAdvertisementDataHandler {
         }
         return advertisementList;
     }
+
+    public CFAdvertisement getAdvertisementById(long id){
+        String result = CFHttpManager.getData(CFConstants.SERVICE_ROOT+"CFUDBService/webresources/entities.advertisement/"+Long.toString(id), new HashMap<String, String>());
+        JSONObject obj = null;
+
+        try {
+            obj = new JSONObject(result);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return CFEntityHelper.getAdvertisementFromJSON(obj, false);
+    }
+
+
 
 
     public List<CFAdvertisement> getAdvertisements(String searchQuery) {
@@ -72,7 +83,6 @@ public class CFAdvertisementDataHandler {
 
 
     public Boolean addAdvertisement(CFAdvertisementObj advertisement) {
-
 
         Gson gson = new Gson();
         Bitmap bmp = null;
@@ -107,6 +117,25 @@ public class CFAdvertisementDataHandler {
             return result;
         }
         return CFConstants.STATUS_ERROR;
+    }
+
+    public List<Long> getFavourites(Long userId)
+    {
+        String result = CFHttpManager.getData(CFConstants.SERVICE_ROOT+"CFUDBService/webresources/entities.favourite/get/"+userId, new HashMap<String, String>());
+
+        JSONArray obj;
+        List<Long> list = new ArrayList<>();
+
+        try {
+            obj = new JSONArray(result);
+            for(int i=0; i<obj.length(); i++) {
+                list.add(Long.parseLong(obj.get(i).toString()));
+            }
+            String s = "sad";
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return list;
     }
 
 
