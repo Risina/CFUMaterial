@@ -40,6 +40,7 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.mikepenz.materialdrawer.Drawer;
@@ -53,6 +54,7 @@ import client.cfu.com.base.CFMinorDataHandler;
 import client.cfu.com.base.CFUserSessionManager;
 import client.cfu.com.constants.CFConstants;
 import client.cfu.com.entities.CFAdvertisement;
+import client.cfu.com.entities.CFUser;
 import client.cfu.com.util.CFPopupHelper;
 
 
@@ -61,6 +63,7 @@ public class HomeActivity extends BaseActivity {
     private DrawerLayout drawer;
 //    private List<CFAdvertisement> adList;
     ListView mDrawerList;
+    RelativeLayout layout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +71,7 @@ public class HomeActivity extends BaseActivity {
         setActionBarIcon(R.drawable.ic_ab_drawer);
 
         mDrawerList = (ListView)findViewById(R.id.menuList);
+        layout = (RelativeLayout)findViewById(R.id.drawerPane);
 
         boolean isLoggedIn = CFUserSessionManager.isUserLoggedIn(getApplicationContext());
 
@@ -79,10 +83,28 @@ public class HomeActivity extends BaseActivity {
         CFPopupHelper.showProgressSpinner(this, View.VISIBLE);
         setListAdapter(isLoggedIn);
 
-
-
-//        new DataAsyncTask().execute();
+        updateProfile();
         new MinorDataAsyncTask().execute();
+    }
+
+    @Override
+    public void updateProfile()
+    {
+        TextView userName = (TextView)findViewById(R.id.userNameProfile);
+        TextView userEmail = (TextView)findViewById(R.id.emailProfile);
+
+        CFUser currentUser = CFUserSessionManager.getUser(getApplicationContext());
+
+        if(currentUser!=null){
+            userName.setText(currentUser.getUName());
+            userEmail.setText(currentUser.getEmail());
+        }
+        else
+        {
+            userName.setText("Welcome Guest!");
+            userEmail.setText("");
+        }
+
     }
 
     public void setListAdapter(boolean isLoggedIn)
@@ -144,6 +166,7 @@ public class HomeActivity extends BaseActivity {
                 }
                 else {
                     CFUserSessionManager.logoutUser(getApplicationContext());
+                    updateProfile();
                     setListAdapter(false);
                     closeDrawer();
 
@@ -160,7 +183,7 @@ public class HomeActivity extends BaseActivity {
             mDrawerList.setItemChecked(position, true);
             mDrawerList.setSelection(position);
 //            setTitle(navMenuTitles[position]);
-            drawer.closeDrawer(mDrawerList);
+            drawer.closeDrawer(layout);
         } else {
 
             Log.e("MainActivity", "Error in creating fragment");
@@ -169,7 +192,7 @@ public class HomeActivity extends BaseActivity {
 
     @Override
     public void closeDrawer(){
-        drawer.closeDrawer(mDrawerList);
+        drawer.closeDrawer(layout);
     }
 
 

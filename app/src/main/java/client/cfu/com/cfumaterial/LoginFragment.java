@@ -24,6 +24,7 @@ import android.widget.TextView;
 
 import client.cfu.com.base.CFUserSessionManager;
 import client.cfu.com.constants.CFConstants;
+import client.cfu.com.entities.CFUser;
 import client.cfu.com.util.CFPopupHelper;
 
 
@@ -163,13 +164,7 @@ public class LoginFragment extends BaseFragment {
 
         @Override
         protected void onPostExecute(String result) {
-//            loadLocations();
-//            spinner.setVisibility(View.GONE);
-//            SharedPreferences prefs = getActivity().getSharedPreferences("com.cfu.user", Activity.MODE_PRIVATE);
-//            String userE = prefs.getString("userEmail", "email");
-//            String pw = prefs.getString("userPw", "userPw");
-//
-//
+
             String toastString = "";
 
             if (result.equals(CFConstants.STATUS_OK)) {
@@ -181,6 +176,10 @@ public class LoginFragment extends BaseFragment {
             Activity activity = getActivity();
             activity.finish();
             activity.startActivity(activity.getIntent());
+
+            HomeActivity homeActivity = (HomeActivity) getActivity();
+            homeActivity.updateProfile();
+
         }
     }
 

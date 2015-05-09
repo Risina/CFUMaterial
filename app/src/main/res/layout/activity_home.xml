@@ -7,27 +7,78 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar"/>
+
+    <!-- The main content view -->
+    <FrameLayout
+        android:id="@+id/frame_container"
+        android:background="@color/material_drawer_dark_background"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" />
+
+    <!-- The navigation drawer -->
     <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_width="280dp"
+        android:layout_height="match_parent"
+        android:id="@+id/drawerPane"
+        android:background="@color/material_drawer_dark_background"
+        android:layout_gravity="start">
 
-        <include
-            android:id="@+id/toolbar"
-            layout="@layout/toolbar"/>
+        <!-- Profile Box -->
 
-        <FrameLayout
-            android:id="@+id/frame_container"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent" />
+        <RelativeLayout
+            android:id="@+id/profileBox"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:clickable="true"
+            android:background="@color/material_blue_grey_800"
+            android:padding="8dp" >
 
+            <ImageView
+                android:id="@+id/avatar"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@drawable/ic_launcher"
+                android:layout_marginTop="15dp" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="42dp"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="15dp"
+                android:layout_toRightOf="@+id/avatar"
+                android:orientation="vertical" >
+
+                <TextView
+                    android:id="@+id/userNameProfile"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#fff"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/emailProfile"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:layout_marginTop="4dp"
+                    android:textColor="#fff"
+                    android:textSize="12sp" />
+            </LinearLayout>
+        </RelativeLayout>
+
+        <!-- List of Actions (pages) -->
+        <ListView
+            android:id="@+id/menuList"
+            android:layout_width="280dp"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/profileBox"
+            android:choiceMode="singleChoice"
+            android:background="@color/material_drawer_dark_background"/>
 
     </RelativeLayout>
-
-    <ListView
-        android:layout_width="260dp"
-        android:id="@+id/menuList"
-        android:layout_height="match_parent"
-        android:layout_gravity="start"
-        android:background="@color/windowBackgroundColor"/>
 
 </android.support.v4.widget.DrawerLayout>

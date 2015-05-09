@@ -94,7 +94,23 @@ public class CFEntityHelper {
         return ad;
     }
 
+    public static CFUser getUserFromJSON(JSONObject obj){
+        CFUser user = new CFUser();
 
+        try {
+            user.setId(Long.parseLong(obj.get("id").toString()));
+            user.setUName(obj.get("UName").toString());
+            user.setEmail(obj.get("email").toString());
+        }
+        catch(JSONException e)
+        {
+            e.printStackTrace();
+            return null;
+        }
+
+        return user;
+
+    }
 
     private static boolean isSafeMethod(JSONObject obj, String key) {
         boolean b;
