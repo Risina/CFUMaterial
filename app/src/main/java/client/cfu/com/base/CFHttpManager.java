@@ -2,16 +2,19 @@ package client.cfu.com.base;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.util.Base64;
 import android.util.Log;
+import android.widget.Toast;
 
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.ResponseHandler;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -19,12 +22,14 @@ import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.util.EntityUtils;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -34,9 +39,13 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 
+import client.cfu.com.cfumaterial.R;
 import client.cfu.com.constants.CFConstants;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.NameValuePair;
 
 /**
  *
@@ -47,7 +56,7 @@ public class CFHttpManager {
     protected CFHttpManager() {
     }
 
-    public static Boolean checkServerAvailability() {
+    public static Boolean isServerAvailable() {
 
         try {
 
@@ -153,7 +162,7 @@ public class CFHttpManager {
         return getData(CFConstants.SERVICE_ROOT + "CFUDBService/webresources/entities.advertisement/count", new HashMap<String, String>());
     }
 
-    protected static String addData(String Uri, String jsonString, Bitmap image) {
+    protected static String addData(String Uri, String jsonString) {
 
         int TIMEOUT_MILLISEC = 10000;  // = 10 seconds
         HttpParams httpParams = new BasicHttpParams();
@@ -185,9 +194,31 @@ public class CFHttpManager {
     }
 
 
-    protected static String uploadImage(Bitmap image, String name, BigInteger advertisementId) {
-        // TODO implement here
-        return "";
+    protected static String uploadImage(Bitmap bitmap, String name, long advertisementId) {
+        String uri = CFConstants.SERVICE_ROOT+"CFUDBService/webresources/fileupload/"+name+"/";
+
+
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream); //compress to which format you want.
+        byte [] byte_arr = stream.toByteArray();
+        String image_str = Base64.encodeToString(byte_arr,1);
+        ArrayList<NameValuePair> nameValuePairs = new  ArrayList<>();
+
+        nameValuePairs.add(new BasicNameValuePair("image",image_str));
+
+        try{
+            HttpClient httpclient = new DefaultHttpClient();
+            HttpPost httppost = new HttpPost(uri);
+            httppost.setHeader("Content-Type", "multipart/form-data");
+            httppost.setEntity(new ByteArrayEntity(byte_arr));
+            HttpResponse response = httpclient.execute(httppost);
+            return CFConstants.STATUS_OK;
+
+        }catch(Exception e){
+            return CFConstants.STATUS_ERROR;
+        }
+
+
     }
 
     protected static Bitmap downloadImage(BigInteger advertisementId) {

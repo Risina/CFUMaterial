@@ -87,9 +87,11 @@ public class CFAdvertisementDataHandler {
         Gson gson = new Gson();
         Bitmap bmp = null;
 
-        String result = CFHttpManager.addData(CFConstants.SERVICE_ROOT + "CFUDBService/webresources/entities.advertisement", gson.toJson(advertisement), bmp);
+        String imageResult = uploadImage(advertisement.getImage(), advertisement.getImageName());
 
-        return result.equals(CFConstants.STATUS_OK);
+        String result = CFHttpManager.addData(CFConstants.SERVICE_ROOT + "CFUDBService/webresources/entities.advertisement", gson.toJson(advertisement));
+
+        return imageResult.equals(CFConstants.STATUS_OK) && result.equals(CFConstants.STATUS_OK);
 
     }
 
@@ -97,7 +99,7 @@ public class CFAdvertisementDataHandler {
 
         Gson gson = new Gson();
         Bitmap bmp = null;
-        String result = CFHttpManager.addData(CFConstants.SERVICE_ROOT + "CFUDBService/webresources/entities.favourite", gson.toJson(favourite), bmp);
+        String result = CFHttpManager.addData(CFConstants.SERVICE_ROOT + "CFUDBService/webresources/entities.favourite", gson.toJson(favourite));
 
         return result.equals(CFConstants.STATUS_OK);
     }
@@ -144,9 +146,8 @@ public class CFAdvertisementDataHandler {
         return null;
     }
 
-    public Boolean uploadImage(Bitmap image, String name) {
-        // TODO implement here
-        return null;
+    public String uploadImage(Bitmap image, String name) {
+        return CFHttpManager.uploadImage(image, name, Long.parseLong("1"));
     }
 
     private List<JSONObject>getValuesFromJsonString(String result){

@@ -1,5 +1,7 @@
 package client.cfu.com.entities;
 
+import android.graphics.Bitmap;
+
 import com.google.gson.Gson;
 
 import org.json.JSONException;
@@ -62,6 +64,26 @@ public class CFAdvertisementObj {
 
 
     private int vehicleTypeId;
+
+    public Bitmap getImage() {
+        return image;
+    }
+
+    public void setImage(Bitmap image) {
+        this.image = image;
+    }
+
+    private Bitmap image;
+
+    public String getImageName() {
+        return imageName;
+    }
+
+    public void setImageName(String imageName) {
+        this.imageName = imageName;
+    }
+
+    private String imageName;
 
 
     private int userId;

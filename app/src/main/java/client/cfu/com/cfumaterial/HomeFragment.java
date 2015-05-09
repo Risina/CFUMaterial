@@ -2,6 +2,8 @@ package client.cfu.com.cfumaterial;
 
 import android.app.Activity;
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -21,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import client.cfu.com.base.CFAdvertisementDataHandler;
+import client.cfu.com.base.CFHttpManager;
 import client.cfu.com.base.CFMinorDataHandler;
 import client.cfu.com.base.CFUserSessionManager;
 import client.cfu.com.constants.CFConstants;
@@ -212,18 +215,35 @@ public class HomeFragment extends BaseFragment {
 
         @Override
         protected String doInBackground(String... params) {
-            CFAdvertisementDataHandler adh = new CFAdvertisementDataHandler();
-            adList = adh.getAdvertisements();
-//            List<Long> list = adh.getFavourites(Long.parseLong("1"));
 
-            return null;
+            ConnectivityManager cm =
+                    (ConnectivityManager)getActivity().getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+
+            NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+            boolean isConnected = activeNetwork != null &&
+                    activeNetwork.isConnectedOrConnecting();
+
+            if(CFHttpManager.isServerAvailable() && isConnected)
+            {
+                CFAdvertisementDataHandler adh = new CFAdvertisementDataHandler();
+                adList = adh.getAdvertisements();
+                return CFConstants.STATUS_OK;
+            }
+            else {
+                return CFConstants.STATUS_ERROR;
+            }
+
         }
 
         @Override
         protected void onPostExecute(String result) {
-            createList(view);
-//            CFPopupHelper.showProgressSpinner(HomeActivity.this, View.GONE);
-//            spinner.setVisibility(View.GONE);
+            if(result.equals(CFConstants.STATUS_OK)){
+                createList(view);
+            }
+            else
+            {
+                CFPopupHelper.showAlertOneButton(getActivity(), "Server is not available. Please check your connection and restart the application").show();
+            }
         }
     }
 
@@ -231,6 +251,7 @@ public class HomeFragment extends BaseFragment {
 
         @Override
         protected String doInBackground(String... params) {
+
             CFAdvertisementDataHandler adh = new CFAdvertisementDataHandler();
             List<Long> list = adh.getFavourites(CFUserSessionManager.getUserId(getActivity().getApplicationContext()));
 
@@ -240,12 +261,25 @@ public class HomeFragment extends BaseFragment {
                     adList.add(adh.getAdvertisementById(adId));
                 }
 
-            return null;
+            if(adList.size() > 0)
+            {
+                return CFConstants.STATUS_OK;
+            }
+
+            return CFConstants.STATUS_ERROR;
         }
 
         @Override
         protected void onPostExecute(String result) {
-            createList(view);
+
+            if(result.equals(CFConstants.STATUS_OK))
+            {
+                createList(view);
+            }
+            else {
+                CFPopupHelper.showToast(getActivity().getApplicationContext(), "You don't have any favourites.");
+            }
+
 //            CFPopupHelper.showProgressSpinner(HomeActivity.this, View.GONE);
 //            spinner.setVisibility(View.GONE);
         }

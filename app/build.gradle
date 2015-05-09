@@ -30,4 +30,5 @@ dependencies {
     compile('com.mikepenz.materialdrawer:library:2.8.2@aar') {
         transitive = true
     }
+    compile files('libs/dropbox-android-sdk-1.6.3.jar')
 }

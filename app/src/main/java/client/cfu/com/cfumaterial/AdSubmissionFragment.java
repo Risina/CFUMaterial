@@ -2,6 +2,8 @@ package client.cfu.com.cfumaterial;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -14,6 +16,7 @@ import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 import android.widget.TextView;
@@ -23,8 +26,10 @@ import com.andreabaccega.widget.FormEditText;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 import client.cfu.com.base.CFAdvertisementDataHandler;
 import client.cfu.com.base.CFUserSessionManager;
@@ -53,6 +58,8 @@ public class AdSubmissionFragment extends BaseFragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+    ImageView imageview;
+    Bitmap bp;
 
     /**
      * Use this factory method to create a new instance of
@@ -91,6 +98,15 @@ public class AdSubmissionFragment extends BaseFragment {
         // Inflate the layout for this fragment
 
         View view = super.onCreateView(inflater, container, savedInstanceState);
+
+        imageview = (ImageView)view.findViewById(R.id.carImage);
+        imageview.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                open();
+            }
+        });
+
         final FormEditText titleText = (FormEditText)view.findViewById(R.id.titleText);
         final EditText descriptionText = (EditText)view.findViewById(R.id.descriptionText);
         final EditText modelText = (EditText)view.findViewById(R.id.modelText);
@@ -142,7 +158,13 @@ public class AdSubmissionFragment extends BaseFragment {
                     ad.setFuelTypeId(safeLongToInt(fuelTypeSpinner.getSelectedItemId()) + 1);
                     ad.setConditionId(safeLongToInt(conditionSpinner.getSelectedItemId()) + 1);
                     ad.setVehicleTypeId(safeLongToInt(vehicleTypeSpinner.getSelectedItemId()) + 1);
-                    ad.setUserId(1);
+                    ad.setUserId((int) CFUserSessionManager.getUserId(getActivity().getApplicationContext()));
+
+                    if(bp!= null){
+                        ad.setImage(bp);
+                    }
+
+                    ad.setImageName(ad.getTitle()+UUID.randomUUID());
 
                     new AdSubmissionAsyncTask(getActivity().getApplicationContext(), ad).execute();
                 } else {
@@ -162,6 +184,24 @@ public class AdSubmissionFragment extends BaseFragment {
                     (l + " cannot be cast to int without changing its value.");
         }
         return (int) l;
+    }
+
+    public void open(){
+        Intent intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+        startActivityForResult(intent, 0);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // TODO Auto-generated method stub
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(data!=null)
+        {
+            bp = (Bitmap) data.getExtras().get("data");
+            imageview.setImageBitmap(bp);
+        }
+
     }
 
     // TODO: Rename method, update argument and hook method into UI event
