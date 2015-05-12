@@ -47,6 +47,18 @@ public class CFAdvertisementDataHandler {
         return advertisementList;
     }
 
+    public List<CFAdvertisement>getAdvertisementsByRange(long from, long to){
+        List<CFAdvertisement> advertisementList = new ArrayList<>();
+
+        String result = CFHttpManager.getData(CFConstants.SERVICE_ROOT+"CFUDBService/webresources/entities.advertisement/"+from+"/"+to, new HashMap<String, String>());
+
+        List<JSONObject> advertisementObjects = getValuesFromJsonString(result);
+        for (JSONObject obj:advertisementObjects) {
+            advertisementList.add(CFEntityHelper.getAdvertisementFromJSON(obj, false));
+        }
+        return advertisementList;
+    }
+
     public CFAdvertisement getAdvertisementById(long id){
         String result = CFHttpManager.getData(CFConstants.SERVICE_ROOT+"CFUDBService/webresources/entities.advertisement/"+Long.toString(id), new HashMap<String, String>());
         JSONObject obj = null;

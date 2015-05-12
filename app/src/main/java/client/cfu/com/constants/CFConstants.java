@@ -9,8 +9,8 @@ import java.util.List;
 public class CFConstants {
     public static final String STATUS_OK = "status ok";
     public static final String STATUS_ERROR = "status error";
-    public static final String SERVICE_ROOT = "https://car4u-risina.rhcloud.com/";
-//    public static final String SERVICE_ROOT = "http://192.168.1.100:8255/";
+//    public static final String SERVICE_ROOT = "https://car4u-risina.rhcloud.com/";
+    public static final String SERVICE_ROOT = "http://192.168.1.100:8255/";
     public static final String CURRENCY = "Rs. ";
     public static List<JSONObject> LOCATIONS = null;
     public static List<JSONObject> BRANDS = null;

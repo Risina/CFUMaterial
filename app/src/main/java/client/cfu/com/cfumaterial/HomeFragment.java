@@ -30,6 +30,7 @@ import client.cfu.com.base.CFUserSessionManager;
 import client.cfu.com.constants.CFConstants;
 import client.cfu.com.entities.CFAdvertisement;
 import client.cfu.com.util.CFPopupHelper;
+import client.cfu.com.util.EndlessScrollListener;
 
 
 /**
@@ -57,6 +58,11 @@ public class HomeFragment extends BaseFragment {
     boolean isFavourites;
     ProgressBar pb;
 
+    long from = 1;
+    long to = 5;
+
+    boolean stopScrolling;
+
     // TODO: Rename and change types and number of parameters
     public static HomeFragment newInstance(boolean isFavourites) {
         HomeFragment fragment = new HomeFragment();
@@ -74,6 +80,7 @@ public class HomeFragment extends BaseFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        adList = new ArrayList<>();
         if (getArguments() != null) {
             isFavourites = getArguments().getBoolean(ARG_PARAM1);
         }
@@ -96,13 +103,18 @@ public class HomeFragment extends BaseFragment {
                 new FavouriteAsyncTask().execute();
             }
             else {
+                pb.setVisibility(View.GONE);
                 CFPopupHelper.showToast(getActivity().getApplicationContext(), "You need to login to add/view favourites");
             }
 
         }
         else {
-            new DataAsyncTask().execute();
+            new DataAsyncTask(1, 5).execute();
+            from += 5;
+            to += 5;
         }
+
+        createList(view);
 
         return view;
     }
@@ -116,6 +128,18 @@ public class HomeFragment extends BaseFragment {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 String url = (String) view.getTag();
                 DetailActivity.launch((BaseActivity)getActivity(), view.findViewById(R.id.image), url, adList.get(i));
+            }
+        });
+        gridView.setOnScrollListener(new EndlessScrollListener() {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount) {
+
+                if(!stopScrolling && !isFavourites){
+                    new DataAsyncTask(from, to).execute();
+                    from += 5;
+                    to += 5;
+                }
+
             }
         });
     }
@@ -224,6 +248,14 @@ public class HomeFragment extends BaseFragment {
 
     private class DataAsyncTask extends AsyncTask<String, String, String> {
 
+        long from;
+        long to;
+
+        public DataAsyncTask(long from, long to)
+        {
+            this.from = from;
+            this.to = to;
+        }
         @Override
         protected String doInBackground(String... params) {
 
@@ -237,7 +269,14 @@ public class HomeFragment extends BaseFragment {
             if(CFHttpManager.isServerAvailable() && isConnected)
             {
                 CFAdvertisementDataHandler adh = new CFAdvertisementDataHandler();
-                adList = adh.getAdvertisements();
+//                adList = adh.getAdvertisements();
+                List<CFAdvertisement> list = adh.getAdvertisementsByRange(from, to);
+
+                if(list.size()>0)
+                {
+                    adList.addAll(adh.getAdvertisementsByRange(from, to));
+                }
+
                 return CFConstants.STATUS_OK;
             }
             else {
@@ -249,7 +288,7 @@ public class HomeFragment extends BaseFragment {
         @Override
         protected void onPostExecute(String result) {
             if(result.equals(CFConstants.STATUS_OK)){
-                createList(view);
+//                createList(view);
             }
             else
             {
@@ -278,6 +317,9 @@ public class HomeFragment extends BaseFragment {
             {
                 return CFConstants.STATUS_OK;
             }
+            else{
+                stopScrolling = true;
+            }
 
             return CFConstants.STATUS_ERROR;
         }
@@ -292,9 +334,8 @@ public class HomeFragment extends BaseFragment {
             else {
                 CFPopupHelper.showToast(getActivity().getApplicationContext(), "You don't have any favourites.");
             }
-
+            pb.setVisibility(View.GONE);
 //            CFPopupHelper.showProgressSpinner(HomeActivity.this, View.GONE);
-//            spinner.setVisibility(View.GONE);
         }
     }
 
