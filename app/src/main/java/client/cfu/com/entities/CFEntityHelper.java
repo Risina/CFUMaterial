@@ -24,6 +24,7 @@ public class CFEntityHelper {
             ad.setModelYear(Short.parseShort(obj.get("modelYear").toString()));
             ad.setEngineCapacity(Integer.parseInt(obj.get("engineCapacity").toString()));
             ad.setMilage(Long.parseLong(obj.get("milage").toString()));
+            ad.setImageLocation(obj.get("imageLocation").toString());
 
 
             JSONObject fuelTypeObj = new JSONObject(obj.get("fuelTypeId").toString());

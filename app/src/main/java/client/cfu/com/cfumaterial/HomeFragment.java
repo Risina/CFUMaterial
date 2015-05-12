@@ -196,7 +196,7 @@ public class HomeFragment extends BaseFragment {
                         .inflate(R.layout.grid_item, viewGroup, false);
             }
 
-            String imageUrl = CFConstants.SERVICE_ROOT+"CFUDBService/images/cfu/"+String.valueOf(i + 1)+".jpg";
+            String imageUrl = CFConstants.SERVICE_ROOT+"CFUDBService/images/cfu/"+items.get(i).getImageLocation()+".jpg";
             view.setTag(imageUrl);
 
             ImageView image = (ImageView) view.findViewById(R.id.image);
