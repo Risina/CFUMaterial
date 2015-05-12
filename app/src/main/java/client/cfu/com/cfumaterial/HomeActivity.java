@@ -80,7 +80,7 @@ public class HomeActivity extends BaseActivity {
         drawer = (DrawerLayout) findViewById(R.id.drawer);
         drawer.setDrawerShadow(R.drawable.drawer_shadow, Gravity.START);
 
-        CFPopupHelper.showProgressSpinner(this, View.VISIBLE);
+//        CFPopupHelper.showProgressSpinner(this, View.VISIBLE);
         setListAdapter(isLoggedIn);
 
         updateProfile();
@@ -255,7 +255,7 @@ public class HomeActivity extends BaseActivity {
         @Override
         protected void onPostExecute(String result) {
 //            startActivities();
-            CFPopupHelper.showProgressSpinner(HomeActivity.this, View.GONE);
+//            CFPopupHelper.showProgressSpinner(HomeActivity.this, View.GONE);
 //            spinner.setVisibility(View.GONE);
         }
     }

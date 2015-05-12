@@ -56,8 +56,8 @@ public class CFPopupHelper extends DialogFragment{
     }
 
     public static void showProgressSpinner(Activity activity, int status){
-//        ProgressBar pb = (ProgressBar)activity.findViewById(R.id.spinner);
-//        pb.setVisibility(status);
+        ProgressBar pb = (ProgressBar)activity.findViewById(R.id.spinner);
+        pb.setVisibility(status);
     }
 
 }

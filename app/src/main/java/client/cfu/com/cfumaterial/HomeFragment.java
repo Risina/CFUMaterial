@@ -15,6 +15,7 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
@@ -54,6 +55,7 @@ public class HomeFragment extends BaseFragment {
     View view;
 
     boolean isFavourites;
+    ProgressBar pb;
 
     // TODO: Rename and change types and number of parameters
     public static HomeFragment newInstance(boolean isFavourites) {
@@ -83,6 +85,9 @@ public class HomeFragment extends BaseFragment {
         // Inflate the layout for this fragment
 
         view = super.onCreateView(inflater, container, savedInstanceState);
+
+        pb = (ProgressBar)view.findViewById(R.id.spinner);
+        pb.setVisibility(View.VISIBLE);
 
         if(isFavourites){
 
@@ -250,6 +255,8 @@ public class HomeFragment extends BaseFragment {
             {
                 CFPopupHelper.showAlertOneButton(getActivity(), "Server is not available. Please check your connection and restart the application").show();
             }
+
+            pb.setVisibility(View.GONE);
         }
     }
 
