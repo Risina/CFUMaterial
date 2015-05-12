@@ -5,12 +5,13 @@ import com.google.gson.Gson;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
 
-public class CFAdvertisement {
+public class CFAdvertisement implements Serializable{
     private Long id;
 
 

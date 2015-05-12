@@ -223,6 +223,16 @@ public class HomeActivity extends BaseActivity {
 
     }
 
+//    @Override
+//    protected void onSaveInstanceState(Bundle outState) {
+//        super.onSaveInstanceState(outState);
+//
+////Save the fragment's instance
+//        getSupportFragmentManager().putFragment(outState, "mContent", mContent);
+//
+//
+//    }
+
     private class MinorDataAsyncTask extends AsyncTask<String, String, String> {
         @Override
         protected void onPreExecute() {

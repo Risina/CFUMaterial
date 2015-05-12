@@ -205,7 +205,13 @@ public class HomeFragment extends BaseFragment {
                     .into(image);
 
             TextView text = (TextView) view.findViewById(R.id.text);
+            TextView textPrice = (TextView) view.findViewById(R.id.textPrice);
+            TextView textLocation = (TextView) view.findViewById(R.id.textLocation);
+
+
             text.setText(items.get(i).getTitle());
+            textPrice.setText(CFConstants.CURRENCY+Long.toString(items.get(i).getPrice()));
+            textLocation.setText(items.get(i).getUserId().getLocationId().getLocationString());
 
             return view;
         }
