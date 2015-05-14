@@ -17,15 +17,20 @@
 package client.cfu.com.cfumaterial;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.FragmentManager;
 import android.app.Fragment;
 
 import android.app.FragmentTransaction;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.Gravity;
@@ -42,6 +47,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
@@ -50,6 +56,7 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 import client.cfu.com.base.CFAdvertisementDataHandler;
+import client.cfu.com.base.CFHttpManager;
 import client.cfu.com.base.CFMinorDataHandler;
 import client.cfu.com.base.CFUserSessionManager;
 import client.cfu.com.constants.CFConstants;
@@ -64,6 +71,7 @@ public class HomeActivity extends BaseActivity {
 //    private List<CFAdvertisement> adList;
     ListView mDrawerList;
     RelativeLayout layout;
+    boolean doubleBackToExitPressedOnce;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,7 +84,6 @@ public class HomeActivity extends BaseActivity {
         boolean isLoggedIn = CFUserSessionManager.isUserLoggedIn(getApplicationContext());
 
 
-
         drawer = (DrawerLayout) findViewById(R.id.drawer);
         drawer.setDrawerShadow(R.drawable.drawer_shadow, Gravity.START);
 
@@ -84,6 +91,26 @@ public class HomeActivity extends BaseActivity {
         setListAdapter(isLoggedIn);
 
         updateProfile();
+
+        ConnectivityManager cm =
+                (ConnectivityManager)getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        boolean isConnected = activeNetwork != null &&
+                activeNetwork.isConnectedOrConnecting();
+
+        if(isConnected)
+        {
+            new ServerAvailabilityTask().execute();
+        }
+        else {
+            AlertDialog alert = CFPopupHelper.showAlertOneButton(HomeActivity.this, "Please turn on internet");
+            alert.show();
+        }
+    }
+
+    public void loadMinorData()
+    {
         new MinorDataAsyncTask().execute();
     }
 
@@ -233,6 +260,25 @@ public class HomeActivity extends BaseActivity {
 //
 //    }
 
+    @Override
+    public void onBackPressed() {
+        if (doubleBackToExitPressedOnce) {
+            super.onBackPressed();
+            return;
+        }
+
+        this.doubleBackToExitPressedOnce = true;
+        Toast.makeText(this, "Please click BACK again to exit", Toast.LENGTH_SHORT).show();
+
+        new Handler().postDelayed(new Runnable() {
+
+            @Override
+            public void run() {
+                doubleBackToExitPressedOnce=false;
+            }
+        }, 2000);
+    }
+
     private class MinorDataAsyncTask extends AsyncTask<String, String, String> {
         @Override
         protected void onPreExecute() {
@@ -257,6 +303,29 @@ public class HomeActivity extends BaseActivity {
 //            startActivities();
 //            CFPopupHelper.showProgressSpinner(HomeActivity.this, View.GONE);
 //            spinner.setVisibility(View.GONE);
+        }
+    }
+
+    private class ServerAvailabilityTask extends AsyncTask<String, String, Boolean> {
+        @Override
+        protected void onPreExecute() {
+
+        }
+
+        @Override
+        protected Boolean doInBackground(String... params) {
+
+            return CFHttpManager.isServerAvailable();
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+            if(result) {
+                loadMinorData();
+            }
+            else {
+                CFPopupHelper.showAlertOneButton(HomeActivity.this, "Server is not available. Please check your connection and restart the application").show();
+            }
         }
     }
 }

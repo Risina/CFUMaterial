@@ -76,10 +76,10 @@ public class CFAdvertisementDataHandler {
 
 
 
-    public List<CFAdvertisement> getAdvertisements(String searchQuery) {
-        // TODO implement here
-        return null;
-    }
+//    public List<CFAdvertisement> getAdvertisements(String searchQuery) {
+//        // TODO implement here
+//        return null;
+//    }
 
 
     public List<CFAdvertisement> getAdvertisements(int locationId) {
@@ -98,12 +98,22 @@ public class CFAdvertisementDataHandler {
 
         Gson gson = new Gson();
         Bitmap bmp = null;
+        String imageResult;
 
-        String imageResult = uploadImage(advertisement.getImage(), advertisement.getImageName());
+        if(advertisement.getImage() != null && !advertisement.getImageName().equals(""))
+        {
+            imageResult = uploadImage(advertisement.getImage(), advertisement.getImageName());
+        }
+        else {
+            imageResult = CFConstants.STATUS_OK;
+        }
+
 
         String result = CFHttpManager.addData(CFConstants.SERVICE_ROOT + "CFUDBService/webresources/entities.advertisement", gson.toJson(advertisement));
 
-        return imageResult.equals(CFConstants.STATUS_OK) && result.equals(CFConstants.STATUS_OK);
+        return imageResult.equals(CFConstants.STATUS_OK)
+                && result.equals(CFConstants.STATUS_OK)
+                ;
 
     }
 

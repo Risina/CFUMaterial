@@ -15,10 +15,12 @@ import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -47,6 +49,8 @@ public class LoginFragment extends BaseFragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+
+    ProgressBar pb;
 
     /**
      * Use this factory method to create a new instance of
@@ -84,6 +88,8 @@ public class LoginFragment extends BaseFragment {
                              Bundle savedInstanceState) {
 
         View view = super.onCreateView(inflater, container, savedInstanceState);
+        pb = (ProgressBar)view.findViewById(R.id.spinner);
+        pb.setVisibility(View.GONE);
 
 
         final EditText email = (EditText) view.findViewById(R.id.editTextEmail);
@@ -93,6 +99,9 @@ public class LoginFragment extends BaseFragment {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                InputMethodManager inputMethodManager = (InputMethodManager)  getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
+                inputMethodManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0);
+                pb.setVisibility(View.VISIBLE);
                 String emailText = email.getText().toString();
                 String passwordText = password.getText().toString();
                 LoginAsyncTask asyncTask = new LoginAsyncTask(getActivity().getApplicationContext());
@@ -179,6 +188,7 @@ public class LoginFragment extends BaseFragment {
 
             HomeActivity homeActivity = (HomeActivity) getActivity();
             homeActivity.updateProfile();
+            pb.setVisibility(View.GONE);
 
         }
     }

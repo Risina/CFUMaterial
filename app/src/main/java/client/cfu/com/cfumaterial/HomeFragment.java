@@ -21,6 +21,7 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import client.cfu.com.base.CFAdvertisementDataHandler;
@@ -52,7 +53,7 @@ public class HomeFragment extends BaseFragment {
     private OnFragmentInteractionListener mListener;
 
     private List<CFAdvertisement> adList;
-//    private List<CFAdvertisement> favAdList;
+    //    private List<CFAdvertisement> favAdList;
     View view;
 
     boolean isFavourites;
@@ -62,6 +63,7 @@ public class HomeFragment extends BaseFragment {
     long to = 5;
 
     boolean stopScrolling;
+    GridViewAdapter adapter;
 
     // TODO: Rename and change types and number of parameters
     public static HomeFragment newInstance(boolean isFavourites) {
@@ -93,41 +95,40 @@ public class HomeFragment extends BaseFragment {
 
         view = super.onCreateView(inflater, container, savedInstanceState);
 
-        pb = (ProgressBar)view.findViewById(R.id.spinner);
+        pb = (ProgressBar) view.findViewById(R.id.spinner);
         pb.setVisibility(View.VISIBLE);
 
-        if(isFavourites){
+        if (isFavourites) {
 
-            if(CFUserSessionManager.isUserLoggedIn(getActivity().getApplicationContext()))
-            {
+            if (CFUserSessionManager.isUserLoggedIn(getActivity().getApplicationContext())) {
                 new FavouriteAsyncTask().execute();
-            }
-            else {
+            } else {
                 pb.setVisibility(View.GONE);
                 CFPopupHelper.showToast(getActivity().getApplicationContext(), "You need to login to add/view favourites");
             }
 
-        }
-        else {
-            new DataAsyncTask(1, 5).execute();
+        } else {
+            new DataAsyncTask(1, 7).execute();
             from += 5;
             to += 5;
         }
 
         createList(view);
 
+
         return view;
     }
 
-    public void createList(View view)
-    {
+    public void createList(View view) {
+
         GridView gridView = (GridView) view.findViewById(R.id.gridView);
-        gridView.setAdapter(new GridViewAdapter(adList));
+        adapter = new GridViewAdapter(adList);
+        gridView.setAdapter(adapter);
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 String url = (String) view.getTag();
-                DetailActivity.launch((BaseActivity)getActivity(), view.findViewById(R.id.image), url, adList.get(i));
+                DetailActivity.launch((BaseActivity) getActivity(), view.findViewById(R.id.image), url, adList.get(i));
             }
         });
         gridView.setOnScrollListener(new EndlessScrollListener() {
@@ -135,11 +136,11 @@ public class HomeFragment extends BaseFragment {
             public void onLoadMore(int page, int totalItemsCount) {
 
                 if(!stopScrolling && !isFavourites){
+                    pb.setVisibility(View.VISIBLE);
                     new DataAsyncTask(from, to).execute();
                     from += 5;
                     to += 5;
                 }
-
             }
         });
     }
@@ -225,12 +226,16 @@ public class HomeFragment extends BaseFragment {
                         .inflate(R.layout.grid_item, viewGroup, false);
             }
 
-            String imageUrl = CFConstants.SERVICE_ROOT+"CFUDBService/images/cfu/"+items.get(i).getImageLocation()+".jpg";
+            String path = items.get(i).getImageLocation();
+            String fileName = path.substring(path.lastIndexOf("/") + 1);
+
+            String imageUrl = CFConstants.SERVICE_ROOT + "CFUDBService/GetImageServlet?img=" + fileName.replace("\"", "");
             view.setTag(imageUrl);
 
             ImageView image = (ImageView) view.findViewById(R.id.image);
             Picasso.with(view.getContext())
                     .load(imageUrl)
+                    .placeholder(R.drawable.ic_launcher)
                     .into(image);
 
             TextView text = (TextView) view.findViewById(R.id.text);
@@ -239,7 +244,7 @@ public class HomeFragment extends BaseFragment {
 
 
             text.setText(items.get(i).getTitle());
-            textPrice.setText(CFConstants.CURRENCY+Long.toString(items.get(i).getPrice()));
+            textPrice.setText(CFConstants.CURRENCY + Long.toString(items.get(i).getPrice()));
             textLocation.setText(items.get(i).getUserId().getLocationId().getLocationString());
 
             return view;
@@ -251,50 +256,36 @@ public class HomeFragment extends BaseFragment {
         long from;
         long to;
 
-        public DataAsyncTask(long from, long to)
-        {
+        public DataAsyncTask(long from, long to) {
             this.from = from;
             this.to = to;
         }
+
         @Override
         protected String doInBackground(String... params) {
 
-            ConnectivityManager cm =
-                    (ConnectivityManager)getActivity().getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
 
-            NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-            boolean isConnected = activeNetwork != null &&
-                    activeNetwork.isConnectedOrConnecting();
-
-            if(CFHttpManager.isServerAvailable() && isConnected)
-            {
-                CFAdvertisementDataHandler adh = new CFAdvertisementDataHandler();
+            CFAdvertisementDataHandler adh = new CFAdvertisementDataHandler();
 //                adList = adh.getAdvertisements();
-                List<CFAdvertisement> list = adh.getAdvertisementsByRange(from, to);
+            List<CFAdvertisement> list = adh.getAdvertisementsByRange(from, to);
 
-                if(list.size()>0)
-                {
-                    adList.addAll(adh.getAdvertisementsByRange(from, to));
-                }
+            if (list.size() > 0) {
+                adList.addAll(list);
+            }
 
-                return CFConstants.STATUS_OK;
-            }
-            else {
-                return CFConstants.STATUS_ERROR;
-            }
+            return CFConstants.STATUS_OK;
+
 
         }
 
         @Override
         protected void onPostExecute(String result) {
-            if(result.equals(CFConstants.STATUS_OK)){
+            if (result.equals(CFConstants.STATUS_OK)) {
 //                createList(view);
-            }
-            else
-            {
+            } else {
                 CFPopupHelper.showAlertOneButton(getActivity(), "Server is not available. Please check your connection and restart the application").show();
             }
-
+            adapter.notifyDataSetChanged();
             pb.setVisibility(View.GONE);
         }
     }
@@ -308,16 +299,13 @@ public class HomeFragment extends BaseFragment {
             List<Long> list = adh.getFavourites(CFUserSessionManager.getUserId(getActivity().getApplicationContext()));
 
             adList = new ArrayList<>();
-                for(Long adId: list)
-                {
-                    adList.add(adh.getAdvertisementById(adId));
-                }
-
-            if(adList.size() > 0)
-            {
-                return CFConstants.STATUS_OK;
+            for (Long adId : list) {
+                adList.add(adh.getAdvertisementById(adId));
             }
-            else{
+
+            if (adList.size() > 0) {
+                return CFConstants.STATUS_OK;
+            } else {
                 stopScrolling = true;
             }
 
@@ -327,11 +315,9 @@ public class HomeFragment extends BaseFragment {
         @Override
         protected void onPostExecute(String result) {
 
-            if(result.equals(CFConstants.STATUS_OK))
-            {
+            if (result.equals(CFConstants.STATUS_OK)) {
                 createList(view);
-            }
-            else {
+            } else {
                 CFPopupHelper.showToast(getActivity().getApplicationContext(), "You don't have any favourites.");
             }
             pb.setVisibility(View.GONE);

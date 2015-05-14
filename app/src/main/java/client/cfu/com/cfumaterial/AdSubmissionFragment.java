@@ -162,9 +162,15 @@ public class AdSubmissionFragment extends BaseFragment {
 
                     if(bp!= null){
                         ad.setImage(bp);
+                        ad.setImageName(ad.getTitle()+UUID.randomUUID());
+                    }
+                    else {
+                        ad.setImage(null);
+                        String s = "";
+                        ad.setImageName(s);
                     }
 
-                    ad.setImageName(ad.getTitle()+UUID.randomUUID());
+
 
                     new AdSubmissionAsyncTask(getActivity().getApplicationContext(), ad).execute();
                 } else {

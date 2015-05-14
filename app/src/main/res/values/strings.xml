@@ -16,7 +16,7 @@
 -->
 <resources>
 
-    <string name="app_name">CFU</string>
+    <string name="app_name">Car 4 You</string>
     <string name="app_name_extended">Car 4 You</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="hello_world">Hello world!</string>

@@ -30,7 +30,7 @@ public class CFPopupHelper extends DialogFragment{
                 .setTitle(R.string.app_name);
         builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-//                activity.getApplicationContext().startActivity(new Intent(Settings.ACTION_WIRELESS_SETTINGS));
+               // System.exit(0);
             }
         });
 

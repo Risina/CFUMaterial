@@ -121,7 +121,7 @@ public class DetailActivity extends BaseActivity {
 
 
         final CFFavourite favourite = new CFFavourite();
-        favourite.setUserId(1);
+        favourite.setUserId(CFUserSessionManager.getUserId(getApplicationContext()));
         favourite.setAdvertisementId(ad.getId());
 
 
