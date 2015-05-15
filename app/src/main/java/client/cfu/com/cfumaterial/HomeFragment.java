@@ -59,11 +59,13 @@ public class HomeFragment extends BaseFragment {
     boolean isFavourites;
     ProgressBar pb;
 
-    long from = 1;
-    long to = 5;
+    long from;
+    long to;
 
     boolean stopScrolling;
     GridViewAdapter adapter;
+
+    DataAsyncTask task;
 
     // TODO: Rename and change types and number of parameters
     public static HomeFragment newInstance(boolean isFavourites) {
@@ -86,6 +88,8 @@ public class HomeFragment extends BaseFragment {
         if (getArguments() != null) {
             isFavourites = getArguments().getBoolean(ARG_PARAM1);
         }
+        from = 0;
+        to = 10;
     }
 
     @Override
@@ -108,9 +112,10 @@ public class HomeFragment extends BaseFragment {
             }
 
         } else {
-            new DataAsyncTask(1, 7).execute();
-            from += 5;
-            to += 5;
+            task = new DataAsyncTask(from, to);
+            task.execute();
+            from = to+1;
+            to = from+10;
         }
 
         createList(view);
@@ -137,9 +142,10 @@ public class HomeFragment extends BaseFragment {
 
                 if(!stopScrolling && !isFavourites){
                     pb.setVisibility(View.VISIBLE);
-                    new DataAsyncTask(from, to).execute();
-                    from += 5;
-                    to += 5;
+                    task = new DataAsyncTask(from, to);
+                    task.execute();
+                    from = to+1;
+                    to = from+10;
                 }
             }
         });
@@ -243,7 +249,7 @@ public class HomeFragment extends BaseFragment {
             TextView textLocation = (TextView) view.findViewById(R.id.textLocation);
 
 
-            text.setText(items.get(i).getTitle());
+            text.setText(items.get(i).getId().toString());
             textPrice.setText(CFConstants.CURRENCY + Long.toString(items.get(i).getPrice()));
             textLocation.setText(items.get(i).getUserId().getLocationId().getLocationString());
 
@@ -267,7 +273,7 @@ public class HomeFragment extends BaseFragment {
 
             CFAdvertisementDataHandler adh = new CFAdvertisementDataHandler();
 //                adList = adh.getAdvertisements();
-            List<CFAdvertisement> list = adh.getAdvertisementsByRange(from, to);
+            List<CFAdvertisement> list = adh.getAdvertisementsByRange(this.from, this.to);
 
             if (list.size() > 0) {
                 adList.addAll(list);
@@ -281,12 +287,13 @@ public class HomeFragment extends BaseFragment {
         @Override
         protected void onPostExecute(String result) {
             if (result.equals(CFConstants.STATUS_OK)) {
+                adapter.notifyDataSetChanged();
+                pb.setVisibility(View.GONE);
 //                createList(view);
             } else {
                 CFPopupHelper.showAlertOneButton(getActivity(), "Server is not available. Please check your connection and restart the application").show();
             }
-            adapter.notifyDataSetChanged();
-            pb.setVisibility(View.GONE);
+
         }
     }
 

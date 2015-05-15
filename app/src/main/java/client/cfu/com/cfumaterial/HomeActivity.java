@@ -72,6 +72,8 @@ public class HomeActivity extends BaseActivity {
     ListView mDrawerList;
     RelativeLayout layout;
     boolean doubleBackToExitPressedOnce;
+    Fragment fragment = null;
+    boolean isFavourite;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -171,17 +173,21 @@ public class HomeActivity extends BaseActivity {
 
 
     public void displayView(int position, String tag) {
-        Fragment fragment = null;
 
         switch (position)
         {
             case 0:
-                fragment = HomeFragment.newInstance(false);
+                if((fragment == null) || (fragment.getClass() != HomeFragment.class) || isFavourite)
+                {
+                    isFavourite = false;
+                    fragment = HomeFragment.newInstance(false);
+                }
                 break;
             case 1:
                 fragment = new AdSubmissionFragment();
                 break;
             case 2:
+                isFavourite = true;
                 fragment = HomeFragment.newInstance(true);
                 break;
             case 3:
@@ -324,7 +330,7 @@ public class HomeActivity extends BaseActivity {
                 loadMinorData();
             }
             else {
-                CFPopupHelper.showAlertOneButton(HomeActivity.this, "Server is not available. Please check your connection and restart the application").show();
+//                CFPopupHelper.showAlertOneButton(HomeActivity.this, "Server is not available. Please check your connection and restart the application").show();
             }
         }
     }
