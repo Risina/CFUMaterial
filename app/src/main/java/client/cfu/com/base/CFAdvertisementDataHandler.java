@@ -47,6 +47,30 @@ public class CFAdvertisementDataHandler {
         return advertisementList;
     }
 
+    public List<CFAdvertisement> getAdvertisementsByUserId(long userId) {
+        List<CFAdvertisement> advertisementList = new ArrayList<>();
+
+        String result = CFHttpManager.getData(CFConstants.SERVICE_ROOT+"CFUDBService/webresources/entities.advertisement/user/"+userId, new HashMap<String, String>());
+
+        List<JSONObject> advertisementObjects = getValuesFromJsonString(result);
+        for (JSONObject obj:advertisementObjects) {
+            advertisementList.add(CFEntityHelper.getAdvertisementFromJSON(obj, false));
+        }
+        return advertisementList;
+    }
+
+    public List<CFAdvertisement> getAdvertisementsByLocationId(long locationId) {
+        List<CFAdvertisement> advertisementList = new ArrayList<>();
+
+        String result = CFHttpManager.getData(CFConstants.SERVICE_ROOT+"CFUDBService/webresources/entities.advertisement/location/"+locationId, new HashMap<String, String>());
+
+        List<JSONObject> advertisementObjects = getValuesFromJsonString(result);
+        for (JSONObject obj:advertisementObjects) {
+            advertisementList.add(CFEntityHelper.getAdvertisementFromJSON(obj, false));
+        }
+        return advertisementList;
+    }
+
     public List<CFAdvertisement>getAdvertisementsByRange(long from, long to){
         List<CFAdvertisement> advertisementList = new ArrayList<>();
 
@@ -75,27 +99,6 @@ public class CFAdvertisementDataHandler {
         return CFEntityHelper.getAdvertisementFromJSON(obj, false);
     }
 
-    public CFAdvertisement getAdvertisementByLocation(int locationId){
-        String result = CFHttpManager.getData(CFConstants.SERVICE_ROOT+"CFUDBService/webresources/entities.advertisement/location/"+locationId, new HashMap<String, String>());
-        JSONObject obj = null;
-
-        try {
-            obj = new JSONObject(result);
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        return CFEntityHelper.getAdvertisementFromJSON(obj, false);
-    }
-
-
-
-
-//    public List<CFAdvertisement> getAdvertisements(String searchQuery) {
-//        // TODO implement here
-//        return null;
-//    }
 
 
     public List<CFAdvertisement> getAdvertisements(int locationId) {
@@ -146,6 +149,12 @@ public class CFAdvertisementDataHandler {
     {
        String result = CFHttpManager.deleteData(CFConstants.SERVICE_ROOT + "CFUDBService/webresources/entities.favourite/"+favourite.getId()+"/");
        return result.equals(CFConstants.STATUS_OK);
+    }
+
+    public Boolean deleteAdvertisement(CFAdvertisement advertisement)
+    {
+        String result = CFHttpManager.deleteData(CFConstants.SERVICE_ROOT + "CFUDBService/webresources/entities.advertisement/"+advertisement.getId());
+        return result.equals(CFConstants.STATUS_OK);
     }
 
     public String getFavourite(Long userId, Long advertisementId)

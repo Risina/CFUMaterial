@@ -2,13 +2,14 @@ package client.cfu.com.cfumaterial;
 
 import android.app.Activity;
 import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -21,15 +22,13 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import client.cfu.com.base.CFAdvertisementDataHandler;
-import client.cfu.com.base.CFHttpManager;
-import client.cfu.com.base.CFMinorDataHandler;
 import client.cfu.com.base.CFUserSessionManager;
 import client.cfu.com.constants.CFConstants;
 import client.cfu.com.entities.CFAdvertisement;
+import client.cfu.com.entities.CFFavourite;
 import client.cfu.com.util.CFPopupHelper;
 import client.cfu.com.util.EndlessScrollListener;
 
@@ -56,7 +55,7 @@ public class HomeFragment extends BaseFragment {
     //    private List<CFAdvertisement> favAdList;
     View view;
 
-    boolean isFavourites;
+    String fragmentType;
     ProgressBar pb;
 
     long from;
@@ -68,10 +67,10 @@ public class HomeFragment extends BaseFragment {
     DataAsyncTask task;
 
     // TODO: Rename and change types and number of parameters
-    public static HomeFragment newInstance(boolean isFavourites) {
+    public static HomeFragment newInstance(String type) {
         HomeFragment fragment = new HomeFragment();
         Bundle args = new Bundle();
-        args.putBoolean(ARG_PARAM1, isFavourites);
+        args.putString(ARG_PARAM1, type);
 //        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
@@ -86,7 +85,7 @@ public class HomeFragment extends BaseFragment {
         super.onCreate(savedInstanceState);
         adList = new ArrayList<>();
         if (getArguments() != null) {
-            isFavourites = getArguments().getBoolean(ARG_PARAM1);
+            fragmentType = getArguments().getString(ARG_PARAM1);
         }
         from = 0;
         to = 10;
@@ -102,24 +101,27 @@ public class HomeFragment extends BaseFragment {
         pb = (ProgressBar) view.findViewById(R.id.spinner);
         pb.setVisibility(View.VISIBLE);
 
-        if (isFavourites) {
+        switch (fragmentType) {
+            case CFConstants.FRAGMENT_FAVOURITES:
 
-            if (CFUserSessionManager.isUserLoggedIn(getActivity().getApplicationContext())) {
-                new FavouriteAsyncTask().execute();
-            } else {
-                pb.setVisibility(View.GONE);
-                CFPopupHelper.showToast(getActivity().getApplicationContext(), "You need to login to add/view favourites");
-            }
-
-        } else {
-            task = new DataAsyncTask(from, to);
-            task.execute();
-            from = to+1;
-            to = from+10;
+                if (CFUserSessionManager.isUserLoggedIn(getActivity().getApplicationContext())) {
+                    new FavouriteAsyncTask().execute();
+                } else {
+                    pb.setVisibility(View.GONE);
+                    CFPopupHelper.showToast(getActivity().getApplicationContext(), getActivity().getString(R.string.login_to_add_favourites));
+                }
+                break;
+            case CFConstants.FRAGMENT_USERADS:
+                new MyAdAsyncTask().execute();
+                break;
+            default:
+                task = new DataAsyncTask(from, to);
+                task.execute();
+                from = to + 1;
+                to = from + 10;
+                break;
         }
-
         createList(view);
-
 
         return view;
     }
@@ -140,7 +142,7 @@ public class HomeFragment extends BaseFragment {
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
 
-                if(!stopScrolling && !isFavourites){
+                if(!stopScrolling && fragmentType.equals(CFConstants.FRAGMENT_HOME)){
                     pb.setVisibility(View.VISIBLE);
                     task = new DataAsyncTask(from, to);
                     task.execute();
@@ -149,6 +151,39 @@ public class HomeFragment extends BaseFragment {
                 }
             }
         });
+
+        if(fragmentType.equals(CFConstants.FRAGMENT_USERADS)){
+            registerForContextMenu(gridView);
+        }
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        if (v.getId()==R.id.gridView) {
+            MenuInflater inflater = getActivity().getMenuInflater();
+            inflater.inflate(R.menu.menu_list, menu);
+        }
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        switch(item.getItemId()) {
+//            case R.id.add:
+//                // add stuff here
+//                return true;
+//            case R.id.edit:
+//                // edit stuff here
+//                return true;
+            case R.id.delete:
+                new AdDeleteAsyncTask(adList.get(info.position)).execute();
+                adList.remove(info.position);
+                adapter.notifyDataSetChanged();
+                return true;
+            default:
+                return super.onContextItemSelected(item);
+        }
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -291,6 +326,39 @@ public class HomeFragment extends BaseFragment {
         }
     }
 
+    private class MyAdAsyncTask extends AsyncTask<String, String, String> {
+
+
+        @Override
+        protected String doInBackground(String... params) {
+
+
+            CFAdvertisementDataHandler adh = new CFAdvertisementDataHandler();
+//                adList = adh.getAdvertisements();
+            List<CFAdvertisement> list = adh.getAdvertisementsByUserId(CFUserSessionManager.getUserId(getActivity().getApplicationContext()));
+
+            if (list.size() > 0) {
+                adList = list;
+            }
+
+            return CFConstants.STATUS_OK;
+
+
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            if (result.equals(CFConstants.STATUS_OK)) {
+                adapter.notifyDataSetChanged();
+                pb.setVisibility(View.GONE);
+                createList(view);
+            } else {
+                CFPopupHelper.showAlertOneButton(getActivity(), "Server is not available. Please check your connection and restart the application").show();
+            }
+
+        }
+    }
+
     private class FavouriteAsyncTask extends AsyncTask<String, String, String> {
 
         @Override
@@ -323,6 +391,60 @@ public class HomeFragment extends BaseFragment {
             }
             pb.setVisibility(View.GONE);
 //            CFPopupHelper.showProgressSpinner(HomeActivity.this, View.GONE);
+        }
+    }
+
+    private class AdDeleteAsyncTask extends AsyncTask<String, String, Boolean> {
+        CFAdvertisement advertisement;
+
+        public AdDeleteAsyncTask(CFAdvertisement ad) {
+            advertisement = ad;
+        }
+
+        @Override
+        protected void onPreExecute() {
+
+        }
+
+        @Override
+        protected Boolean doInBackground(String... params) {
+
+            CFAdvertisementDataHandler dataHandler = new CFAdvertisementDataHandler();
+
+//            if(isChecked)
+//            {
+//                boolean status = dataHandler.addFavourite(favourite);
+//
+//                if(status)
+//                {
+//                    String id = dataHandler.getFavourite(favourite.getUserId(), favourite.getAdvertisementId());
+//                    if(!id.equals(""))
+//                    {
+//                        currentFavourite = Long.parseLong(id);
+//                    }
+//                }
+//
+//                return status;
+//
+//            }
+//            else {
+//                dataHandler.deleteFavourite(favourite);
+//            }
+
+            return dataHandler.deleteAdvertisement(advertisement);
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+
+            String toastText;
+            if (result) {
+                toastText = getResources().getString(R.string.successful);
+            } else {
+                toastText = getResources().getString(R.string.failed);
+            }
+
+            CFPopupHelper.showToast(HomeFragment.this.getActivity(), toastText);
         }
     }
 

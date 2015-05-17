@@ -25,6 +25,7 @@ import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -39,6 +40,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
@@ -72,8 +74,7 @@ public class HomeActivity extends BaseActivity {
     ListView mDrawerList;
     RelativeLayout layout;
     boolean doubleBackToExitPressedOnce;
-    Fragment fragment;
-    boolean isFavourite;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,7 +91,7 @@ public class HomeActivity extends BaseActivity {
         drawer.setDrawerShadow(R.drawable.drawer_shadow, Gravity.START);
 
 //        CFPopupHelper.showProgressSpinner(this, View.VISIBLE);
-        setListAdapter(isLoggedIn, fragment);
+        setListAdapter(isLoggedIn);
 
         updateProfile();
 
@@ -136,7 +137,7 @@ public class HomeActivity extends BaseActivity {
 
     }
 
-    public void setListAdapter(boolean isLoggedIn, Fragment currentFragment)
+    public void setListAdapter(boolean isLoggedIn)
     {   final String[] listItems;
         if(!isLoggedIn)
         {
@@ -152,7 +153,8 @@ public class HomeActivity extends BaseActivity {
                     getResources().getString(R.string.home),
                     getResources().getString(R.string.submitAd),
                     getResources().getString(R.string.favourites),
-                    getResources().getString(R.string.logOut)
+                    getResources().getString(R.string.logOut),
+                    getResources().getString(R.string.my_ads)
             };
         }
 
@@ -161,32 +163,30 @@ public class HomeActivity extends BaseActivity {
                 listItems);
         mDrawerList.setAdapter(adapter);
         displayView(0, "");
+        mDrawerList.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
 
         mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                for(int a = 0; a < parent.getChildCount(); a++)
+//                {
+//                    parent.getChildAt(a).setBackgroundColor(Color.TRANSPARENT);
+//                }
+
                 displayView(position, listItems[position]);
             }
         });
-
-        fragment = currentFragment;
-
     }
 
 
     public void displayView(int position, String tag) {
-
+        Fragment fragment = null;
         switch (position)
         {
             case 0:
-                if((fragment == null) || (fragment.getClass() != HomeFragment.class) || isFavourite)
-                {
-                    isFavourite = false;
-                    fragment = HomeFragment.newInstance(false);
-                }
+                fragment = HomeFragment.newInstance(CFConstants.FRAGMENT_HOME);
                 break;
             case 1:
-
                 if(CFConstants.minorDataLoaded()) {
                     fragment = new AdSubmissionFragment();
                 }
@@ -196,23 +196,25 @@ public class HomeActivity extends BaseActivity {
 
                 break;
             case 2:
-                isFavourite = true;
-                fragment = HomeFragment.newInstance(true);
+                fragment = HomeFragment.newInstance(CFConstants.FRAGMENT_FAVOURITES);
                 break;
             case 3:
                 if(tag.equals(getResources().getString(R.string.login)))
                 {
                     fragment = new LoginFragment();
-                    setListAdapter(true, fragment);
+                    setListAdapter(true);
 
                 }
                 else {
                     CFUserSessionManager.logoutUser(getApplicationContext());
                     updateProfile();
-                    setListAdapter(false, fragment);
+                    displayView(0,"");
+                    setListAdapter(false);
                     closeDrawer();
-
                 }
+                break;
+            case 4:
+                fragment = HomeFragment.newInstance(CFConstants.FRAGMENT_USERADS);
                 break;
         }
 

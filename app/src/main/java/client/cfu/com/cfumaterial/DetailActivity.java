@@ -244,11 +244,8 @@ public class DetailActivity extends BaseActivity {
 
             }
             else {
-                dataHandler.deleteFavourite(favourite);
+               return dataHandler.deleteFavourite(favourite);
             }
-
-            return false;
-
         }
 
         @Override
@@ -287,7 +284,7 @@ public class DetailActivity extends BaseActivity {
         @Override
         protected String doInBackground(String... params) {
 
-            return new CFAdvertisementDataHandler().getFavourite(Long.parseLong("1"), ad.getId());
+            return new CFAdvertisementDataHandler().getFavourite(CFUserSessionManager.getUserId(getApplicationContext()), ad.getId());
 
         }
 

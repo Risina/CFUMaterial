@@ -47,9 +47,12 @@
     <string name="home">Home</string>
     <string name="submitAd">Submit Ad</string>
     <string name="favourites">Favourites</string>
+    <string name="my_ads">My Ads</string>
     <string name="login">Login</string>
     <string name="logOut">Log out</string>
     <string name="spin">spin</string>
     <string name="please_wait">Please wait</string>
+    <string name="login_to_add_favourites"> You have to login to add/view favourites </string>
+    <string name="menu_delete">delete</string>
 
 </resources>
