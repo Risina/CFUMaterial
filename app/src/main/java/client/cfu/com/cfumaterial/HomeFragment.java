@@ -196,15 +196,9 @@ public class HomeFragment extends BaseFragment {
     }
 
     private class GridViewAdapter extends BaseAdapter {
-
-        Context context;
         List<CFAdvertisement> items;
-
-        //        public GridViewAdapter(){};
         public GridViewAdapter(List<CFAdvertisement> items) {
             super();
-//            super(context, textViewResourceId, items);
-//            this.context = context;
             this.items = items;
         }
 

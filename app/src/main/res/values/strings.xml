@@ -49,5 +49,6 @@
     <string name="favourites">Favourites</string>
     <string name="login">Login</string>
     <string name="logOut">Log out</string>
+    <string name="spin">spin</string>
 
 </resources>

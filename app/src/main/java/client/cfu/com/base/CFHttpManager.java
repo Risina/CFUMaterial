@@ -196,7 +196,7 @@ public class CFHttpManager {
     }
 
 
-    protected static String uploadImage(Bitmap bitmap, String name, long advertisementId) {
+    protected static String uploadImage(Bitmap bitmap, String name) {
         String uri = CFConstants.SERVICE_ROOT+"CFUDBService/webresources/fileupload/"+name+"/";
 
 

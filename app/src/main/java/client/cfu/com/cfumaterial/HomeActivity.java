@@ -72,7 +72,7 @@ public class HomeActivity extends BaseActivity {
     ListView mDrawerList;
     RelativeLayout layout;
     boolean doubleBackToExitPressedOnce;
-    Fragment fragment = null;
+    Fragment fragment;
     boolean isFavourite;
 
     @Override
@@ -90,7 +90,7 @@ public class HomeActivity extends BaseActivity {
         drawer.setDrawerShadow(R.drawable.drawer_shadow, Gravity.START);
 
 //        CFPopupHelper.showProgressSpinner(this, View.VISIBLE);
-        setListAdapter(isLoggedIn);
+        setListAdapter(isLoggedIn, fragment);
 
         updateProfile();
 
@@ -136,7 +136,7 @@ public class HomeActivity extends BaseActivity {
 
     }
 
-    public void setListAdapter(boolean isLoggedIn)
+    public void setListAdapter(boolean isLoggedIn, Fragment currentFragment)
     {   final String[] listItems;
         if(!isLoggedIn)
         {
@@ -169,6 +169,8 @@ public class HomeActivity extends BaseActivity {
             }
         });
 
+        fragment = currentFragment;
+
     }
 
 
@@ -184,7 +186,11 @@ public class HomeActivity extends BaseActivity {
                 }
                 break;
             case 1:
-                fragment = new AdSubmissionFragment();
+
+                if(CFConstants.minorDataLoaded()) {
+                    fragment = new AdSubmissionFragment();
+                }
+
                 break;
             case 2:
                 isFavourite = true;
@@ -194,13 +200,13 @@ public class HomeActivity extends BaseActivity {
                 if(tag.equals(getResources().getString(R.string.login)))
                 {
                     fragment = new LoginFragment();
-                    setListAdapter(true);
+                    setListAdapter(true, fragment);
 
                 }
                 else {
                     CFUserSessionManager.logoutUser(getApplicationContext());
                     updateProfile();
-                    setListAdapter(false);
+                    setListAdapter(false, fragment);
                     closeDrawer();
 
                 }

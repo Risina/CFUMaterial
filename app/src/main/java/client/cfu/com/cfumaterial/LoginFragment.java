@@ -51,6 +51,7 @@ public class LoginFragment extends BaseFragment {
     private OnFragmentInteractionListener mListener;
 
     ProgressBar pb;
+    Button button;
 
     /**
      * Use this factory method to create a new instance of
@@ -94,7 +95,7 @@ public class LoginFragment extends BaseFragment {
 
         final EditText email = (EditText) view.findViewById(R.id.editTextEmail);
         final EditText password = (EditText) view.findViewById(R.id.editTextPassword);
-        Button button = (Button) view.findViewById(R.id.loginButton);
+        button = (Button) view.findViewById(R.id.loginButton);
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -106,6 +107,7 @@ public class LoginFragment extends BaseFragment {
                 String passwordText = password.getText().toString();
                 LoginAsyncTask asyncTask = new LoginAsyncTask(getActivity().getApplicationContext());
                 asyncTask.execute(emailText, passwordText);
+                button.setEnabled(false);
             }
         });
 
@@ -178,18 +180,20 @@ public class LoginFragment extends BaseFragment {
 
             if (result.equals(CFConstants.STATUS_OK)) {
                 toastString = getString(R.string.login_successful);
+
+                Activity activity = getActivity();
+                activity.finish();
+                activity.startActivity(activity.getIntent());
+
+                HomeActivity homeActivity = (HomeActivity) getActivity();
+                homeActivity.updateProfile();
+
             } else {
                 toastString = getString(R.string.login_failed);
             }
-            CFPopupHelper.showToast(appContext, toastString);
-            Activity activity = getActivity();
-            activity.finish();
-            activity.startActivity(activity.getIntent());
-
-            HomeActivity homeActivity = (HomeActivity) getActivity();
-            homeActivity.updateProfile();
+            button.setEnabled(true);
             pb.setVisibility(View.GONE);
-
+            CFPopupHelper.showToast(appContext, toastString);
         }
     }
 

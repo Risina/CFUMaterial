@@ -56,11 +56,27 @@ public class CFAdvertisementDataHandler {
         for (JSONObject obj:advertisementObjects) {
             advertisementList.add(CFEntityHelper.getAdvertisementFromJSON(obj, false));
         }
+
+        Collections.reverse(advertisementList);
         return advertisementList;
     }
 
     public CFAdvertisement getAdvertisementById(long id){
         String result = CFHttpManager.getData(CFConstants.SERVICE_ROOT+"CFUDBService/webresources/entities.advertisement/"+Long.toString(id), new HashMap<String, String>());
+        JSONObject obj = null;
+
+        try {
+            obj = new JSONObject(result);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return CFEntityHelper.getAdvertisementFromJSON(obj, false);
+    }
+
+    public CFAdvertisement getAdvertisementByLocation(int locationId){
+        String result = CFHttpManager.getData(CFConstants.SERVICE_ROOT+"CFUDBService/webresources/entities.advertisement/location/"+locationId, new HashMap<String, String>());
         JSONObject obj = null;
 
         try {
@@ -169,7 +185,7 @@ public class CFAdvertisementDataHandler {
     }
 
     public String uploadImage(Bitmap image, String name) {
-        return CFHttpManager.uploadImage(image, name, Long.parseLong("1"));
+        return CFHttpManager.uploadImage(image, name);
     }
 
     private List<JSONObject>getValuesFromJsonString(String result){
