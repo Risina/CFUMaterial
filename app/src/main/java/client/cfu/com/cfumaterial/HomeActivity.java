@@ -190,6 +190,9 @@ public class HomeActivity extends BaseActivity {
                 if(CFConstants.minorDataLoaded()) {
                     fragment = new AdSubmissionFragment();
                 }
+                else {
+                    CFPopupHelper.showToast(getApplicationContext(), getString(R.string.please_wait));
+                }
 
                 break;
             case 2:

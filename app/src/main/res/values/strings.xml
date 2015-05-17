@@ -50,5 +50,6 @@
     <string name="login">Login</string>
     <string name="logOut">Log out</string>
     <string name="spin">spin</string>
+    <string name="please_wait">Please wait</string>
 
 </resources>

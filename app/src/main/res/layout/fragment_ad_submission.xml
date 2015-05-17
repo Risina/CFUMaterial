@@ -4,7 +4,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:cfu="http://schemas.android.com/apk/res-auto">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -13,121 +13,142 @@
         android:orientation="vertical"
         tools:context="client.cfu.com.cfumaterial.AdSubmissionFragment">
 
-        <include
-            android:id="@+id/toolbar"
-            layout="@layout/toolbar" />
 
-        <ImageView
-            android:layout_width="fill_parent"
-            android:layout_height="200dp"
-            android:id="@+id/carImage"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true" />
 
-        <com.andreabaccega.widget.FormEditText
-            cfu:testType="alpha"
-            android:layout_width="fill_parent"
-            android:layout_height="50dp"
-            android:id="@+id/titleText"
-            android:hint="@string/title"
-            android:text="new"
-            android:layout_marginBottom="10dp" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:layout_height="match_parent">
 
-        <EditText
-            android:layout_width="fill_parent"
-            android:layout_height="50dp"
+            <include
+                android:id="@+id/toolbar"
+                layout="@layout/toolbar" />
 
-            android:id="@+id/descriptionText"
-            android:layout_marginBottom="10dp"
-            android:hint="@string/description"
-            android:text="new"
-            android:inputType="textMultiLine" />
+            <ImageView
+                android:layout_width="fill_parent"
+                android:layout_height="200dp"
+                android:id="@+id/carImage"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true" />
 
-        <Spinner
-            android:id="@+id/brand_spinner"
-            android:layout_width="fill_parent"
+            <com.andreabaccega.widget.FormEditText
+                cfu:testType="alpha"
+                android:layout_width="fill_parent"
+                android:layout_height="50dp"
+                android:id="@+id/titleText"
+                android:hint="@string/title"
+                android:text="new"
+                android:layout_marginBottom="10dp" />
 
-            android:layout_height="wrap_content" />
+            <EditText
+                android:layout_width="fill_parent"
+                android:layout_height="50dp"
 
-        <EditText
-            android:layout_width="fill_parent"
-            android:layout_height="50dp"
-            android:text="new"
-            android:id="@+id/modelText"
-            android:layout_marginBottom="10dp"
-            android:hint="@string/model_name"
+                android:id="@+id/descriptionText"
+                android:layout_marginBottom="10dp"
+                android:hint="@string/description"
+                android:text="new"
+                android:inputType="textMultiLine" />
 
-            />
+            <Spinner
+                android:id="@+id/brand_spinner"
+                android:layout_width="fill_parent"
 
-        <EditText
-            android:layout_width="fill_parent"
-            android:layout_height="50dp"
-            android:text="1991"
-            android:id="@+id/modelYearText"
-            android:layout_marginBottom="10dp"
-            android:hint="@string/model_year" />
+                android:layout_height="wrap_content" />
 
-        <Spinner
-            android:id="@+id/bodyType_spinner"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content" />
+            <EditText
+                android:layout_width="fill_parent"
+                android:layout_height="50dp"
+                android:text="new"
+                android:id="@+id/modelText"
+                android:layout_marginBottom="10dp"
+                android:hint="@string/model_name"
 
-        <Spinner
-            android:id="@+id/condition_spinner"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content" />
+                />
 
-        <Spinner
-            android:id="@+id/transmission_spinner"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content" />
+            <EditText
+                android:layout_width="fill_parent"
+                android:layout_height="50dp"
+                android:text="1991"
+                android:id="@+id/modelYearText"
+                android:layout_marginBottom="10dp"
+                android:hint="@string/model_year" />
 
-        <Spinner
-            android:id="@+id/fuelType_spinner"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content" />
-        <Spinner
-            android:id="@+id/vehicleType_spinner"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content" />
+            <Spinner
+                android:id="@+id/bodyType_spinner"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content" />
 
-        <EditText
-            android:layout_width="fill_parent"
-            android:layout_height="50dp"
-            android:text="1234"
-            android:id="@+id/engineCapacityText"
-            android:layout_marginBottom="10dp"
-            android:hint="@string/engine_capacity"
+            <Spinner
+                android:id="@+id/condition_spinner"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content" />
 
-            />
+            <Spinner
+                android:id="@+id/transmission_spinner"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content" />
 
-        <EditText
-            android:layout_width="fill_parent"
-            android:layout_height="50dp"
-            android:text="1234"
-            android:id="@+id/mileageText"
-            android:inputType="number"
-            android:layout_marginBottom="10dp"
-            android:hint="@string/milege"
+            <Spinner
+                android:id="@+id/fuelType_spinner"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content" />
+            <Spinner
+                android:id="@+id/vehicleType_spinner"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content" />
 
-            />
+            <EditText
+                android:layout_width="fill_parent"
+                android:layout_height="50dp"
+                android:text="1234"
+                android:id="@+id/engineCapacityText"
+                android:layout_marginBottom="10dp"
+                android:hint="@string/engine_capacity"
 
-        <EditText
-            android:layout_width="fill_parent"
-            android:layout_height="50dp"
-            android:id="@+id/priceText"
-            android:text="1234"
-            android:layout_marginBottom="10dp"
-            android:hint="@string/price"
-            />
+                />
 
-        <Button
+            <EditText
+                android:layout_width="fill_parent"
+                android:layout_height="50dp"
+                android:text="1234"
+                android:id="@+id/mileageText"
+                android:inputType="number"
+                android:layout_marginBottom="10dp"
+                android:hint="@string/milege"
+
+                />
+
+            <EditText
+                android:layout_width="fill_parent"
+                android:layout_height="50dp"
+                android:id="@+id/priceText"
+                android:text="1234"
+                android:layout_marginBottom="10dp"
+                android:hint="@string/price"
+                />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Submit"
+                android:layout_marginBottom="100dp"
+                android:id="@+id/submitButton"
+                android:layout_gravity="center_horizontal" />
+
+
+            </LinearLayout>
+
+
+        <ProgressBar
+            android:id="@+id/spinner"
+            style="?android:attr/progressBarStyleLarge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Submit"
-            android:layout_marginBottom="100dp"
-            android:id="@+id/submitButton"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="10dp"
+            android:indeterminate="true"
             android:layout_gravity="center_horizontal" />
-
-    </LinearLayout>
+    </RelativeLayout>
 </ScrollView>

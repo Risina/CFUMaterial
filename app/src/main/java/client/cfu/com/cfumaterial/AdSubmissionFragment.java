@@ -17,6 +17,7 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 import android.widget.TextView;
@@ -60,6 +61,8 @@ public class AdSubmissionFragment extends BaseFragment {
     private OnFragmentInteractionListener mListener;
     ImageView imageview;
     Bitmap bp;
+    ProgressBar progressBar;
+    Button submitButton;
 
     /**
      * Use this factory method to create a new instance of
@@ -99,7 +102,11 @@ public class AdSubmissionFragment extends BaseFragment {
 
         View view = super.onCreateView(inflater, container, savedInstanceState);
 
+        progressBar = (ProgressBar)view.findViewById(R.id.spinner);
+        progressBar.setVisibility(View.GONE);
+
         imageview = (ImageView)view.findViewById(R.id.carImage);
+        imageview.setImageResource(R.drawable.app);
         imageview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -121,7 +128,7 @@ public class AdSubmissionFragment extends BaseFragment {
         final Spinner fuelTypeSpinner = (Spinner)view.findViewById(R.id.fuelType_spinner);
         final Spinner vehicleTypeSpinner = (Spinner)view.findViewById(R.id.vehicleType_spinner);
 
-        Button submitButton = (Button)view.findViewById(R.id.submitButton);
+        submitButton = (Button)view.findViewById(R.id.submitButton);
 
         brandSpinner.setAdapter(new ListAdapter(getActivity(), CFConstants.BRANDS));
         bodyTypeSpinner.setAdapter(new ListAdapter(getActivity(), CFConstants.BODY_TYPES));
@@ -135,6 +142,8 @@ public class AdSubmissionFragment extends BaseFragment {
             @Override
             public void onClick(View v) {
 
+                submitButton.setEnabled(false);
+                progressBar.setVisibility(View.VISIBLE);
 
                 FormEditText[] allFields    = { titleText};
 
@@ -152,11 +161,11 @@ public class AdSubmissionFragment extends BaseFragment {
                     ad.setModelYear(Short.parseShort(modelYearText.getText().toString()));
                     ad.setEngineCapacity(Integer.parseInt(engineCapacityText.getText().toString()));
                     ad.setMilage(Long.parseLong(mileageText.getText().toString()));
-                    ad.setBrandId(safeLongToInt(brandSpinner.getSelectedItemId()) + 1);
+                    ad.setBrandId((int)brandSpinner.getSelectedItemId() + 1);
                     ad.setBodyTypeId(safeLongToInt(bodyTypeSpinner.getSelectedItemId()) + 1);
                     ad.setTransmissionTypeId(safeLongToInt(transmissionSpinner.getSelectedItemId()) + 1);
                     ad.setFuelTypeId(safeLongToInt(fuelTypeSpinner.getSelectedItemId()) + 1);
-                    ad.setConditionId(safeLongToInt(conditionSpinner.getSelectedItemId()) + 1);
+                    ad.setConditionId((int)conditionSpinner.getSelectedItemId() + 1);
                     ad.setVehicleTypeId(safeLongToInt(vehicleTypeSpinner.getSelectedItemId()) + 1);
                     ad.setUserId((int) CFUserSessionManager.getUserId(getActivity().getApplicationContext()));
 
@@ -349,6 +358,8 @@ public class AdSubmissionFragment extends BaseFragment {
                 toastText = getResources().getString(R.string.failed);
             }
 
+            submitButton.setEnabled(true);
+            progressBar.setVisibility(View.GONE);
             CFPopupHelper.showToast(appContext, toastText);
         }
     }
