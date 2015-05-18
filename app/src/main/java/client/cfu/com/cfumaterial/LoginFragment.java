@@ -180,13 +180,16 @@ public class LoginFragment extends BaseFragment {
 
             if (result.equals(CFConstants.STATUS_OK)) {
                 toastString = getString(R.string.login_successful);
+                ((HomeActivity) getActivity()).setListAdapter(true);
 
-                Activity activity = getActivity();
-                activity.finish();
-                activity.startActivity(activity.getIntent());
+//                Activity activity = getActivity();
+//                activity.finish();
+//                activity.startActivity(activity.getIntent());
 
                 HomeActivity homeActivity = (HomeActivity) getActivity();
                 homeActivity.updateProfile();
+                ((HomeActivity) getActivity()).displayView(0,"");
+
 
             } else {
                 toastString = getString(R.string.login_failed);

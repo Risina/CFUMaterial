@@ -55,6 +55,9 @@ import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.List;
 
 import client.cfu.com.base.CFAdvertisementDataHandler;
@@ -70,7 +73,7 @@ import client.cfu.com.util.CFPopupHelper;
 public class HomeActivity extends BaseActivity {
 
     private DrawerLayout drawer;
-//    private List<CFAdvertisement> adList;
+    //    private List<CFAdvertisement> adList;
     ListView mDrawerList;
     RelativeLayout layout;
     boolean doubleBackToExitPressedOnce;
@@ -81,8 +84,8 @@ public class HomeActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setActionBarIcon(R.drawable.ic_ab_drawer);
 
-        mDrawerList = (ListView)findViewById(R.id.menuList);
-        layout = (RelativeLayout)findViewById(R.id.drawerPane);
+        mDrawerList = (ListView) findViewById(R.id.menuList);
+        layout = (RelativeLayout) findViewById(R.id.drawerPane);
 
         boolean isLoggedIn = CFUserSessionManager.isUserLoggedIn(getApplicationContext());
 
@@ -96,59 +99,51 @@ public class HomeActivity extends BaseActivity {
         updateProfile();
 
         ConnectivityManager cm =
-                (ConnectivityManager)getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+                (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
 
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
         boolean isConnected = activeNetwork != null &&
                 activeNetwork.isConnectedOrConnecting();
 
-        if(isConnected)
-        {
+        if (isConnected) {
             new ServerAvailabilityTask().execute();
-        }
-        else {
+        } else {
             AlertDialog alert = CFPopupHelper.showAlertOneButton(HomeActivity.this, "Please turn on internet");
             alert.show();
         }
     }
 
-    public void loadMinorData()
-    {
+    public void loadMinorData() {
         new MinorDataAsyncTask().execute();
     }
 
     @Override
-    public void updateProfile()
-    {
-        TextView userName = (TextView)findViewById(R.id.userNameProfile);
-        TextView userEmail = (TextView)findViewById(R.id.emailProfile);
+    public void updateProfile() {
+        TextView userName = (TextView) findViewById(R.id.userNameProfile);
+        TextView userEmail = (TextView) findViewById(R.id.emailProfile);
 
         CFUser currentUser = CFUserSessionManager.getUser(getApplicationContext());
 
-        if(currentUser!=null){
+        if (currentUser != null) {
             userName.setText(currentUser.getUName());
             userEmail.setText(currentUser.getEmail());
-        }
-        else
-        {
+        } else {
             userName.setText("Welcome Guest!");
             userEmail.setText("");
         }
 
     }
 
-    public void setListAdapter(boolean isLoggedIn)
-    {   final String[] listItems;
-        if(!isLoggedIn)
-        {
+    public void setListAdapter(boolean isLoggedIn) {
+        final String[] listItems;
+        if (!isLoggedIn) {
             listItems = new String[]{
                     getResources().getString(R.string.home),
                     getResources().getString(R.string.submitAd),
                     getResources().getString(R.string.favourites),
                     getResources().getString(R.string.login)
             };
-        }
-        else {
+        } else {
             listItems = new String[]{
                     getResources().getString(R.string.home),
                     getResources().getString(R.string.submitAd),
@@ -158,7 +153,7 @@ public class HomeActivity extends BaseActivity {
             };
         }
 
-        ArrayAdapter adapter=new ArrayAdapter<>(this,
+        ArrayAdapter adapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_list_item_1,
                 listItems);
         mDrawerList.setAdapter(adapter);
@@ -181,16 +176,14 @@ public class HomeActivity extends BaseActivity {
 
     public void displayView(int position, String tag) {
         Fragment fragment = null;
-        switch (position)
-        {
+        switch (position) {
             case 0:
                 fragment = HomeFragment.newInstance(CFConstants.FRAGMENT_HOME);
                 break;
             case 1:
-                if(CFConstants.minorDataLoaded()) {
+                if (CFConstants.minorDataLoaded()) {
                     fragment = new AdSubmissionFragment();
-                }
-                else {
+                } else {
                     CFPopupHelper.showToast(getApplicationContext(), getString(R.string.please_wait));
                 }
 
@@ -199,16 +192,14 @@ public class HomeActivity extends BaseActivity {
                 fragment = HomeFragment.newInstance(CFConstants.FRAGMENT_FAVOURITES);
                 break;
             case 3:
-                if(tag.equals(getResources().getString(R.string.login)))
-                {
+                if (tag.equals(getResources().getString(R.string.login))) {
                     fragment = new LoginFragment();
-                    setListAdapter(true);
+//                    setListAdapter(true);
 
-                }
-                else {
+                } else {
                     CFUserSessionManager.logoutUser(getApplicationContext());
                     updateProfile();
-                    displayView(0,"");
+                    displayView(0, "");
                     setListAdapter(false);
                     closeDrawer();
                 }
@@ -235,7 +226,7 @@ public class HomeActivity extends BaseActivity {
     }
 
     @Override
-    public void closeDrawer(){
+    public void closeDrawer() {
         drawer.closeDrawer(layout);
     }
 
@@ -291,7 +282,7 @@ public class HomeActivity extends BaseActivity {
 
             @Override
             public void run() {
-                doubleBackToExitPressedOnce=false;
+                doubleBackToExitPressedOnce = false;
             }
         }, 2000);
     }
@@ -305,14 +296,42 @@ public class HomeActivity extends BaseActivity {
         @Override
         protected String doInBackground(String... params) {
 
+
             CFConstants.LOCATIONS = CFMinorDataHandler.getLocations();
+            CFConstants.LOCATIONS.add(0, addToJasonObj(0, getString(R.string.select_location)));
+
             CFConstants.BODY_TYPES = CFMinorDataHandler.getBodyTypes();
+            CFConstants.BODY_TYPES.add(0, addToJasonObj(0, getString(R.string.select_body)));
+
             CFConstants.BRANDS = CFMinorDataHandler.getBrands();
+            CFConstants.BRANDS.add(0, addToJasonObj(0, getString(R.string.select_brand)));
+
             CFConstants.CONDITION_TYPES = CFMinorDataHandler.getConditions();
+            CFConstants.CONDITION_TYPES.add(0, addToJasonObj(0, getString(R.string.select_condition)));
+
             CFConstants.FUEL_TYPES = CFMinorDataHandler.getFuelTypes();
+            CFConstants.FUEL_TYPES.add(0, addToJasonObj(0, getString(R.string.select_fuel_type)));
+
             CFConstants.TRANSMISSION_TYPES = CFMinorDataHandler.getTransmissionTypes();
+            CFConstants.TRANSMISSION_TYPES.add(0, addToJasonObj(0, getString(R.string.select_transmission_type)));
+
             CFConstants.VEHICLE_TYPES = CFMinorDataHandler.getVehicleTypes();
+            CFConstants.VEHICLE_TYPES.add(0, addToJasonObj(0, getString(R.string.select_vehicle_type)));
+
+
             return null;
+        }
+
+        private JSONObject addToJasonObj(int id, String string) {
+            JSONObject item = new JSONObject();
+            try {
+                item.put("id", id);
+                item.put("string", string);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            return item;
         }
 
         @Override
@@ -337,10 +356,9 @@ public class HomeActivity extends BaseActivity {
 
         @Override
         protected void onPostExecute(Boolean result) {
-            if(result) {
+            if (result) {
                 loadMinorData();
-            }
-            else {
+            } else {
 //                CFPopupHelper.showAlertOneButton(HomeActivity.this, "Server is not available. Please check your connection and restart the application").show();
             }
         }

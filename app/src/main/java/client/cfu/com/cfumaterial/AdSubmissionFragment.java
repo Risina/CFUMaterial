@@ -115,11 +115,11 @@ public class AdSubmissionFragment extends BaseFragment {
         });
 
         final FormEditText titleText = (FormEditText)view.findViewById(R.id.titleText);
-        final EditText descriptionText = (EditText)view.findViewById(R.id.descriptionText);
-        final EditText modelText = (EditText)view.findViewById(R.id.modelText);
-        final EditText modelYearText = (EditText)view.findViewById(R.id.modelYearText);
+        final FormEditText descriptionText = (FormEditText)view.findViewById(R.id.descriptionText);
+        final FormEditText modelText = (FormEditText)view.findViewById(R.id.modelText);
+        final FormEditText modelYearText = (FormEditText)view.findViewById(R.id.modelYearText);
         final EditText engineCapacityText = (EditText)view.findViewById(R.id.engineCapacityText);
-        final EditText mileageText = (EditText)view.findViewById(R.id.mileageText);
+        final FormEditText mileageText = (FormEditText)view.findViewById(R.id.mileageText);
 
         final Spinner brandSpinner = (Spinner)view.findViewById(R.id.brand_spinner);
         final Spinner bodyTypeSpinner = (Spinner)view.findViewById(R.id.bodyType_spinner);
@@ -143,9 +143,8 @@ public class AdSubmissionFragment extends BaseFragment {
             public void onClick(View v) {
 
                 submitButton.setEnabled(false);
-                progressBar.setVisibility(View.VISIBLE);
 
-                FormEditText[] allFields    = { titleText};
+                FormEditText[] allFields    = {titleText, descriptionText, modelText, modelYearText, mileageText};
 
 
                 boolean allValid = true;
@@ -153,7 +152,24 @@ public class AdSubmissionFragment extends BaseFragment {
                     allValid = field.testValidity() && allValid;
                 }
 
+                boolean validSpinners = (int)brandSpinner.getSelectedItemId() != 0 &&
+                        (int)(bodyTypeSpinner.getSelectedItemId()) != 0 &&
+                        (int)(transmissionSpinner.getSelectedItemId()) != 0 &&
+                        (int)(fuelTypeSpinner.getSelectedItemId()) != 0 &&
+                        (int)(conditionSpinner.getSelectedItemId()) !=0 &&
+                        (int)(vehicleTypeSpinner.getSelectedItemId()) !=0 ;
+
+                if(!validSpinners)
+                {
+                    CFPopupHelper.showToast(getActivity().getApplicationContext(), getActivity().getString(R.string.check_mandatory_fields));
+                    submitButton.setEnabled(true);
+                }
+
+                allValid = allValid && validSpinners;
+
                 if (allValid) {
+                    progressBar.setVisibility(View.VISIBLE);
+
                     CFAdvertisementObj ad = new CFAdvertisementObj();
                     ad.setTitle(titleText.getText().toString());
                     ad.setDescription(descriptionText.getText().toString());
@@ -161,13 +177,15 @@ public class AdSubmissionFragment extends BaseFragment {
                     ad.setModelYear(Short.parseShort(modelYearText.getText().toString()));
                     ad.setEngineCapacity(Integer.parseInt(engineCapacityText.getText().toString()));
                     ad.setMilage(Long.parseLong(mileageText.getText().toString()));
-                    ad.setBrandId((int)brandSpinner.getSelectedItemId() + 1);
-                    ad.setBodyTypeId(safeLongToInt(bodyTypeSpinner.getSelectedItemId()) + 1);
-                    ad.setTransmissionTypeId(safeLongToInt(transmissionSpinner.getSelectedItemId()) + 1);
-                    ad.setFuelTypeId(safeLongToInt(fuelTypeSpinner.getSelectedItemId()) + 1);
-                    ad.setConditionId((int)conditionSpinner.getSelectedItemId() + 1);
-                    ad.setVehicleTypeId(safeLongToInt(vehicleTypeSpinner.getSelectedItemId()) + 1);
                     ad.setUserId((int) CFUserSessionManager.getUserId(getActivity().getApplicationContext()));
+
+                    ad.setBrandId((int)brandSpinner.getSelectedItemId());
+                    ad.setBodyTypeId((int)(bodyTypeSpinner.getSelectedItemId()));
+                    ad.setTransmissionTypeId((int)(transmissionSpinner.getSelectedItemId()));
+                    ad.setFuelTypeId((int)(fuelTypeSpinner.getSelectedItemId()));
+                    ad.setConditionId((int)conditionSpinner.getSelectedItemId());
+                    ad.setVehicleTypeId((int)(vehicleTypeSpinner.getSelectedItemId()));
+
 
                     if(bp!= null){
                         ad.setImage(bp);
@@ -178,8 +196,6 @@ public class AdSubmissionFragment extends BaseFragment {
                         String s = "";
                         ad.setImageName(s);
                     }
-
-
 
                     new AdSubmissionAsyncTask(getActivity().getApplicationContext(), ad).execute();
                 } else {

@@ -261,29 +261,35 @@ public class HomeFragment extends BaseFragment {
                         .inflate(R.layout.grid_item, viewGroup, false);
             }
 
-            String path = items.get(i).getImageLocation();
-            String fileName = path.substring(path.lastIndexOf("/") + 1);
+            if(items.size()>0){
+                String path = items.get(i).getImageLocation();
+                String fileName = path.substring(path.lastIndexOf("/") + 1);
 
-            String imageUrl = CFConstants.SERVICE_ROOT + "CFUDBService/GetImageServlet?img=" + fileName.replace("\"", "");
-            view.setTag(imageUrl);
+                String imageUrl = CFConstants.SERVICE_ROOT + "CFUDBService/GetImageServlet?img=" + fileName.replace("\"", "");
+                view.setTag(imageUrl);
 
-            ImageView image = (ImageView) view.findViewById(R.id.image);
-            Picasso.with(view.getContext())
-                    .load(imageUrl)
-                    .placeholder(R.drawable.ic_launcher)
-                    .into(image);
+                ImageView image = (ImageView) view.findViewById(R.id.image);
+                Picasso.with(view.getContext())
+                        .load(imageUrl)
+                        .placeholder(R.drawable.ic_launcher)
+                        .into(image);
 
-            TextView text = (TextView) view.findViewById(R.id.text);
-            TextView textPrice = (TextView) view.findViewById(R.id.textPrice);
-            TextView textLocation = (TextView) view.findViewById(R.id.textLocation);
+                TextView text = (TextView) view.findViewById(R.id.text);
+                TextView textPrice = (TextView) view.findViewById(R.id.textPrice);
+                TextView textLocation = (TextView) view.findViewById(R.id.textLocation);
 
 
-            text.setText(items.get(i).getId().toString());
-            textPrice.setText(CFConstants.CURRENCY + Long.toString(items.get(i).getPrice()));
-            textLocation.setText(items.get(i).getUserId().getLocationId().getLocationString());
+                text.setText(clean(items.get(i).getTitle()));
+                textPrice.setText(CFConstants.CURRENCY + Long.toString(items.get(i).getPrice()));
+                textLocation.setText(items.get(i).getUserId().getLocationId().getLocationString());
+            }
 
             return view;
         }
+    }
+
+    private String clean(String s){
+        return s.replace("\"", "");
     }
 
     private class DataAsyncTask extends AsyncTask<String, String, String> {
@@ -339,6 +345,9 @@ public class HomeFragment extends BaseFragment {
 
             if (list.size() > 0) {
                 adList = list;
+            }
+            else {
+//                CFPopupHelper.showToast(getActivity().getApplicationContext(), getActivity().getString(R.string.no_user_ads));
             }
 
             return CFConstants.STATUS_OK;

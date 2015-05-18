@@ -63,7 +63,7 @@ public class DetailActivity extends BaseActivity {
 
         ImageView image = (ImageView) findViewById(R.id.image);
         ViewCompat.setTransitionName(image, EXTRA_IMAGE);
-        Picasso.with(this).load(getIntent().getStringExtra(EXTRA_IMAGE)).into(image);
+//        Picasso.with(this).load(getIntent().getStringExtra(EXTRA_IMAGE)).into(image);
         createAdvertisement(getIntent().getStringExtra(ADVERTISEMENT));
     }
 
@@ -86,16 +86,16 @@ public class DetailActivity extends BaseActivity {
             JSONObject jsonObject = new JSONObject(jsonString);
             ad = CFEntityHelper.getAdvertisementFromJSON(jsonObject, true);
 
-            title.setText(ad.getTitle());
-            description.setText(ad.getDescription());
+            title.setText(clean(ad.getTitle()));
+            description.setText(clean(ad.getDescription()));
             brand.setText(ad.getBrandId().getBrandString());
             condition.setText(ad.getConditionId().getConditionString());
             engine.setText(Integer.toString(ad.getEngineCapacity()));
             fuel.setText(ad.getFuelTypeId().getFuelTypeString());
             mileage.setText(Long.toString(ad.getMilage()));
-            model.setText(ad.getModel());
+            model.setText(clean(ad.getModel()));
             modelYear.setText(Long.toString(ad.getMilage()));
-            price.setText(Long.toString(ad.getPrice()));
+            price.setText(clean(Long.toString(ad.getPrice())));
             transmission.setText(ad.getTransmissionTypeId().getTransmissionTypeString());
             location.setText(ad.getUserId().getLocationId().getLocationString());
         } catch (JSONException e) {
@@ -111,6 +111,10 @@ public class DetailActivity extends BaseActivity {
         else{
             progress(CFConstants.STATUS_ERROR);
         }
+    }
+
+    private String clean(String s){
+        return s.replace("\"", "");
     }
 
     public void progress(String result)

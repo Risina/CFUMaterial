@@ -10,10 +10,9 @@
         android:layout_height="match_parent"
         android:background="@color/background_material_dark"
         android:clickable="true"
+        xmlns:test="http://schemas.android.com/apk/res-auto"
         android:orientation="vertical"
         tools:context="client.cfu.com.cfumaterial.AdSubmissionFragment">
-
-
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -32,18 +31,18 @@
                 android:layout_centerHorizontal="true" />
 
             <com.andreabaccega.widget.FormEditText
-                cfu:testType="alpha"
                 android:layout_width="fill_parent"
                 android:layout_height="50dp"
                 android:id="@+id/titleText"
+                test:testType="nocheck"
                 android:hint="@string/title"
                 android:text="new"
                 android:layout_marginBottom="10dp" />
 
-            <EditText
+            <com.andreabaccega.widget.FormEditText
                 android:layout_width="fill_parent"
                 android:layout_height="50dp"
-
+                test:testType="nocheck"
                 android:id="@+id/descriptionText"
                 android:layout_marginBottom="10dp"
                 android:hint="@string/description"
@@ -53,23 +52,26 @@
             <Spinner
                 android:id="@+id/brand_spinner"
                 android:layout_width="fill_parent"
-
+                android:layout_margin="10dp"
                 android:layout_height="wrap_content" />
 
-            <EditText
+            <com.andreabaccega.widget.FormEditText
                 android:layout_width="fill_parent"
                 android:layout_height="50dp"
                 android:text="new"
+                test:testType="nocheck"
                 android:id="@+id/modelText"
                 android:layout_marginBottom="10dp"
                 android:hint="@string/model_name"
 
                 />
 
-            <EditText
+            <com.andreabaccega.widget.FormEditText
                 android:layout_width="fill_parent"
                 android:layout_height="50dp"
+                test:testType="numeric"
                 android:text="1991"
+                android:inputType="number"
                 android:id="@+id/modelYearText"
                 android:layout_marginBottom="10dp"
                 android:hint="@string/model_year" />
@@ -77,30 +79,37 @@
             <Spinner
                 android:id="@+id/bodyType_spinner"
                 android:layout_width="fill_parent"
+                android:layout_margin="10dp"
                 android:layout_height="wrap_content" />
 
             <Spinner
                 android:id="@+id/condition_spinner"
                 android:layout_width="fill_parent"
+                android:layout_margin="10dp"
                 android:layout_height="wrap_content" />
 
             <Spinner
                 android:id="@+id/transmission_spinner"
                 android:layout_width="fill_parent"
+                android:layout_margin="10dp"
                 android:layout_height="wrap_content" />
 
             <Spinner
                 android:id="@+id/fuelType_spinner"
                 android:layout_width="fill_parent"
+                android:layout_margin="10dp"
                 android:layout_height="wrap_content" />
             <Spinner
                 android:id="@+id/vehicleType_spinner"
                 android:layout_width="fill_parent"
+                android:layout_margin="10dp"
                 android:layout_height="wrap_content" />
 
-            <EditText
+            <com.andreabaccega.widget.FormEditText
                 android:layout_width="fill_parent"
                 android:layout_height="50dp"
+                test:testType="numeric"
+                android:inputType="number"
                 android:text="1234"
                 android:id="@+id/engineCapacityText"
                 android:layout_marginBottom="10dp"
@@ -108,10 +117,11 @@
 
                 />
 
-            <EditText
+            <com.andreabaccega.widget.FormEditText
                 android:layout_width="fill_parent"
                 android:layout_height="50dp"
                 android:text="1234"
+                test:testType="numeric"
                 android:id="@+id/mileageText"
                 android:inputType="number"
                 android:layout_marginBottom="10dp"
@@ -119,11 +129,13 @@
 
                 />
 
-            <EditText
+            <com.andreabaccega.widget.FormEditText
                 android:layout_width="fill_parent"
                 android:layout_height="50dp"
                 android:id="@+id/priceText"
+                android:inputType="number"
                 android:text="1234"
+                test:testType="numeric"
                 android:layout_marginBottom="10dp"
                 android:hint="@string/price"
                 />
@@ -136,9 +148,7 @@
                 android:id="@+id/submitButton"
                 android:layout_gravity="center_horizontal" />
 
-
             </LinearLayout>
-
 
         <ProgressBar
             android:id="@+id/spinner"
