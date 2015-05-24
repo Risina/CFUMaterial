@@ -297,27 +297,13 @@ public class HomeActivity extends BaseActivity {
         protected String doInBackground(String... params) {
 
 
-            CFConstants.LOCATIONS = CFMinorDataHandler.getLocations();
-            CFConstants.LOCATIONS.add(0, addToJasonObj(0, getString(R.string.select_location)));
-
-            CFConstants.BODY_TYPES = CFMinorDataHandler.getBodyTypes();
-            CFConstants.BODY_TYPES.add(0, addToJasonObj(0, getString(R.string.select_body)));
-
             CFConstants.BRANDS = CFMinorDataHandler.getBrands();
-            CFConstants.BRANDS.add(0, addToJasonObj(0, getString(R.string.select_brand)));
-
+            CFConstants.LOCATIONS = CFMinorDataHandler.getLocations();
+            CFConstants.BODY_TYPES = CFMinorDataHandler.getBodyTypes();
             CFConstants.CONDITION_TYPES = CFMinorDataHandler.getConditions();
-            CFConstants.CONDITION_TYPES.add(0, addToJasonObj(0, getString(R.string.select_condition)));
-
             CFConstants.FUEL_TYPES = CFMinorDataHandler.getFuelTypes();
-            CFConstants.FUEL_TYPES.add(0, addToJasonObj(0, getString(R.string.select_fuel_type)));
-
             CFConstants.TRANSMISSION_TYPES = CFMinorDataHandler.getTransmissionTypes();
-            CFConstants.TRANSMISSION_TYPES.add(0, addToJasonObj(0, getString(R.string.select_transmission_type)));
-
             CFConstants.VEHICLE_TYPES = CFMinorDataHandler.getVehicleTypes();
-            CFConstants.VEHICLE_TYPES.add(0, addToJasonObj(0, getString(R.string.select_vehicle_type)));
-
 
             return null;
         }
@@ -339,6 +325,16 @@ public class HomeActivity extends BaseActivity {
 //            startActivities();
 //            CFPopupHelper.showProgressSpinner(HomeActivity.this, View.GONE);
 //            spinner.setVisibility(View.GONE);
+
+
+            CFConstants.LOCATIONS.add(0, addToJasonObj(0, getString(R.string.select_location)));
+            CFConstants.BODY_TYPES.add(0, addToJasonObj(0, getString(R.string.select_body)));
+            CFConstants.BRANDS.add(0, addToJasonObj(0, getString(R.string.select_brand)));
+            CFConstants.CONDITION_TYPES.add(0, addToJasonObj(0, getString(R.string.select_condition)));
+            CFConstants.FUEL_TYPES.add(0, addToJasonObj(0, getString(R.string.select_fuel_type)));
+            CFConstants.TRANSMISSION_TYPES.add(0, addToJasonObj(0, getString(R.string.select_transmission_type)));
+            CFConstants.VEHICLE_TYPES.add(0, addToJasonObj(0, getString(R.string.select_vehicle_type)));
+
         }
     }
 

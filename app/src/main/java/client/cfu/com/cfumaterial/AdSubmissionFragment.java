@@ -369,6 +369,8 @@ public class AdSubmissionFragment extends BaseFragment {
             if(result)
             {
                 toastText = getResources().getString(R.string.successful);
+                HomeActivity activity = (HomeActivity)getActivity();
+                activity.displayView(1,"");
             }
             else {
                 toastText = getResources().getString(R.string.failed);

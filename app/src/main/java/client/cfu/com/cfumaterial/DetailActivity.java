@@ -28,6 +28,7 @@ import android.support.v4.view.ViewCompat;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
@@ -63,7 +64,7 @@ public class DetailActivity extends BaseActivity {
 
         ImageView image = (ImageView) findViewById(R.id.image);
         ViewCompat.setTransitionName(image, EXTRA_IMAGE);
-//        Picasso.with(this).load(getIntent().getStringExtra(EXTRA_IMAGE)).into(image);
+        Picasso.with(this).load(getIntent().getStringExtra(EXTRA_IMAGE)).into(image);
         createAdvertisement(getIntent().getStringExtra(ADVERTISEMENT));
     }
 
@@ -82,22 +83,53 @@ public class DetailActivity extends BaseActivity {
         TextView transmission = (TextView) findViewById(R.id.textViewTransmission);
         TextView location = (TextView) findViewById(R.id.textViewLocation);
 
+        Button telephone = (Button)findViewById(R.id.buttonTelephone);
+        Button email = (Button)findViewById(R.id.buttonEmail);
+
         try {
             JSONObject jsonObject = new JSONObject(jsonString);
             ad = CFEntityHelper.getAdvertisementFromJSON(jsonObject, true);
 
             title.setText(clean(ad.getTitle()));
             description.setText(clean(ad.getDescription()));
-            brand.setText(ad.getBrandId().getBrandString());
-            condition.setText(ad.getConditionId().getConditionString());
-            engine.setText(Integer.toString(ad.getEngineCapacity()));
-            fuel.setText(ad.getFuelTypeId().getFuelTypeString());
-            mileage.setText(Long.toString(ad.getMilage()));
-            model.setText(clean(ad.getModel()));
-            modelYear.setText(Long.toString(ad.getMilage()));
-            price.setText(clean(Long.toString(ad.getPrice())));
-            transmission.setText(ad.getTransmissionTypeId().getTransmissionTypeString());
-            location.setText(ad.getUserId().getLocationId().getLocationString());
+            brand.setText("brand: "+ad.getBrandId().getBrandString());
+            condition.setText("Condition: "+ad.getConditionId().getConditionString());
+            engine.setText("Engine capacity: "+Integer.toString(ad.getEngineCapacity())+"CC");
+            fuel.setText("Fuel Type: "+ad.getFuelTypeId().getFuelTypeString());
+            mileage.setText("Mileage: " +Long.toString(ad.getMilage()));
+            model.setText("Model: "+clean(ad.getModel()));
+            modelYear.setText("Model year:"+Long.toString(ad.getMilage()));
+            price.setText("Price: "+clean(Long.toString(ad.getPrice())));
+            transmission.setText("Transmission: "+ad.getTransmissionTypeId().getTransmissionTypeString());
+            location.setText("Location: "+ad.getUserId().getLocationId().getLocationString());
+
+            telephone.setText(ad.getUserId().getPhoneNo1());
+            email.setText(ad.getUserId().getEmail().toLowerCase());
+
+            telephone.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Button view = (Button)v;
+
+                    Intent intent = new Intent(Intent.ACTION_DIAL);
+                    intent.setData(Uri.parse("tel:" + view.getText()));
+                    startActivity(intent);
+                }
+            });
+
+            email.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Button view = (Button)v;
+
+                    Intent intent = new Intent(Intent.ACTION_SEND);
+                    intent.setType("text/plain");
+                    intent.putExtra(Intent.EXTRA_EMAIL, new String[]{view.getText().toString()});
+                    Intent mailer = Intent.createChooser(intent, null);
+                    startActivity(mailer);
+                }
+            });
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -296,8 +328,6 @@ public class DetailActivity extends BaseActivity {
         protected void onPostExecute(String result) {
 
             progress(result);
-
-//            CFPopupHelper.showToast(appContext, toastText);
         }
     }
 }

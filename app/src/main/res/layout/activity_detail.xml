@@ -33,6 +33,7 @@
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
+
             <ImageView
                 android:id="@+id/image"
                 android:layout_width="match_parent"
@@ -49,6 +50,27 @@
                 android:contentDescription=""
                 style="?android:attr/starStyle" />
         </FrameLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="fill_parent"
+            android:orientation="horizontal">
+
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="70dp"
+                android:layout_marginTop="10dp"
+                android:layout_weight="1"
+                android:id="@+id/buttonTelephone" />
+
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="70dp"
+                android:layout_weight="2"
+                android:layout_marginTop="10dp"
+                android:id="@+id/buttonEmail" />
+
+        </LinearLayout>
 
 
         <TextView
