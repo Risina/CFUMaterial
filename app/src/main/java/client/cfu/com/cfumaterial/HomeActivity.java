@@ -141,6 +141,7 @@ public class HomeActivity extends BaseActivity {
                     getResources().getString(R.string.home),
                     getResources().getString(R.string.submitAd),
                     getResources().getString(R.string.favourites),
+                    getString(R.string.filter_by_location),
                     getResources().getString(R.string.login)
             };
         } else {
@@ -148,6 +149,7 @@ public class HomeActivity extends BaseActivity {
                     getResources().getString(R.string.home),
                     getResources().getString(R.string.submitAd),
                     getResources().getString(R.string.favourites),
+                    getString(R.string.filter_by_location),
                     getResources().getString(R.string.logOut),
                     getResources().getString(R.string.my_ads)
             };
@@ -157,7 +159,7 @@ public class HomeActivity extends BaseActivity {
                 android.R.layout.simple_list_item_1,
                 listItems);
         mDrawerList.setAdapter(adapter);
-        displayView(0, "");
+        displayView(0, "", "");
         mDrawerList.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
 
         mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -168,17 +170,24 @@ public class HomeActivity extends BaseActivity {
 //                    parent.getChildAt(a).setBackgroundColor(Color.TRANSPARENT);
 //                }
 
-                displayView(position, listItems[position]);
+                displayView(position, listItems[position], "");
             }
         });
     }
 
 
-    public void displayView(int position, String tag) {
+    public void displayView(int position, String tag, String filter) {
         Fragment fragment = null;
         switch (position) {
             case 0:
-                fragment = HomeFragment.newInstance(CFConstants.FRAGMENT_HOME);
+                if(!filter.equals("")) {
+                    fragment = HomeFragment.newInstance(CFConstants.FRAGMENT_LOCATION, filter);
+                }
+                else {
+                    fragment = HomeFragment.newInstance(CFConstants.FRAGMENT_HOME, "");
+                }
+
+                setTitle(CFConstants.FRAGMENT_HOME);
                 break;
             case 1:
                 if (CFConstants.minorDataLoaded()) {
@@ -187,25 +196,39 @@ public class HomeActivity extends BaseActivity {
                     CFPopupHelper.showToast(getApplicationContext(), getString(R.string.please_wait));
                 }
 
+                setTitle("Submit Ad");
+
                 break;
             case 2:
-                fragment = HomeFragment.newInstance(CFConstants.FRAGMENT_FAVOURITES);
+                fragment = HomeFragment.newInstance(CFConstants.FRAGMENT_FAVOURITES, "");
+                setTitle(CFConstants.FRAGMENT_FAVOURITES);
                 break;
             case 3:
+                if (CFConstants.minorDataLoaded()) {
+                    fragment = LocationFragment.newInstance(CFConstants.getLocations());
+                } else {
+                    CFPopupHelper.showToast(getApplicationContext(), getString(R.string.please_wait));
+                }
+
+                break;
+            case 4:
                 if (tag.equals(getResources().getString(R.string.login))) {
                     fragment = new LoginFragment();
-//                    setListAdapter(true);
+                    setTitle("Login");
 
                 } else {
                     CFUserSessionManager.logoutUser(getApplicationContext());
                     updateProfile();
-                    displayView(0, "");
+                    displayView(0, "", "");
                     setListAdapter(false);
                     closeDrawer();
+                    setTitle(CFConstants.FRAGMENT_HOME);
                 }
+
                 break;
-            case 4:
-                fragment = HomeFragment.newInstance(CFConstants.FRAGMENT_USERADS);
+            case 5:
+                fragment = HomeFragment.newInstance(CFConstants.FRAGMENT_USERADS, "");
+                setTitle(CFConstants.FRAGMENT_USERADS);
                 break;
         }
 
@@ -217,7 +240,6 @@ public class HomeActivity extends BaseActivity {
 
             mDrawerList.setItemChecked(position, true);
             mDrawerList.setSelection(position);
-//            setTitle(navMenuTitles[position]);
             drawer.closeDrawer(layout);
         } else {
 

@@ -188,7 +188,7 @@ public class LoginFragment extends BaseFragment {
 
                 HomeActivity homeActivity = (HomeActivity) getActivity();
                 homeActivity.updateProfile();
-                ((HomeActivity) getActivity()).displayView(0,"");
+                ((HomeActivity) getActivity()).displayView(0,"", "");
 
 
             } else {

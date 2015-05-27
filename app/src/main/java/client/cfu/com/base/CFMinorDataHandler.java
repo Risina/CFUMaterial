@@ -82,12 +82,7 @@ public class CFMinorDataHandler {
         try {
             JSONArray jsonArray = new JSONArray(result);
             for(int i=0; i<jsonArray.length(); i++) {
-//                map = new HashMap<String, String>();
                 JSONObject obj = jsonArray.getJSONObject(i);
-////                valueArrayList.add((String) obj.get(key));
-//                map.put("id", obj.get("id").toString());
-//                map.put(key, (String) obj.get(key));
-//                valueArrayList.add(map);
                 obj.put("string",  obj.get(key).toString());
                 valueArrayList.add(obj);
             }

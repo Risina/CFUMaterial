@@ -22,7 +22,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
 public abstract class BaseActivity extends AppCompatActivity implements BaseFragment.OnFragmentInteractionListener,
-        LoginFragment.OnFragmentInteractionListener, AdSubmissionFragment.OnFragmentInteractionListener, HomeFragment.OnFragmentInteractionListener{
+        LoginFragment.OnFragmentInteractionListener, AdSubmissionFragment.OnFragmentInteractionListener, HomeFragment.OnFragmentInteractionListener, LocationFragment.OnFragmentInteractionListener{
 
     private Toolbar toolbar;
 

@@ -1,6 +1,9 @@
 package client.cfu.com.constants;
 
+import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -20,9 +23,10 @@ public class CFConstants {
     public static List<JSONObject> CONDITION_TYPES = null;
     public static List<JSONObject> FUEL_TYPES = null;
 
-    public static final String FRAGMENT_HOME = "home";
-    public static final String FRAGMENT_USERADS = "user ads";
-    public static final String FRAGMENT_FAVOURITES = "favourites";
+    public static final String FRAGMENT_HOME = "Car 4 U";
+    public static final String FRAGMENT_USERADS = "My ads";
+    public static final String FRAGMENT_FAVOURITES = "Favourites";
+    public static final String FRAGMENT_LOCATION = "Location";
 
     public static boolean minorDataLoaded() {
         return LOCATIONS != null &&
@@ -32,5 +36,24 @@ public class CFConstants {
                 VEHICLE_TYPES != null &&
                 CONDITION_TYPES != null &&
                 FUEL_TYPES != null;
+    }
+
+    public static ArrayList<String>getLocations(){
+        ArrayList<String> list = new ArrayList<>();
+
+        if(minorDataLoaded()) {
+            for(JSONObject obj: LOCATIONS) {
+                try {
+                    list.add(obj.get("string").toString());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        if(list.get(0).equals("Select Location")){
+            list.remove(0);
+        }
+
+        return list;
     }
 }

@@ -44,8 +44,8 @@ import client.cfu.com.util.EndlessScrollListener;
 public class HomeFragment extends BaseFragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "isFav";
-//    private static final String ARG_PARAM2 = "param2";
+    private static final String ARG_PARAM1 = "type";
+    private static final String ARG_PARAM2 = "location";
 
     // TODO: Rename and change types of parameters
 
@@ -66,12 +66,14 @@ public class HomeFragment extends BaseFragment {
 
     DataAsyncTask task;
 
+    int locationId = -1;
+
     // TODO: Rename and change types and number of parameters
-    public static HomeFragment newInstance(String type) {
+    public static HomeFragment newInstance(String type, String filter) {
         HomeFragment fragment = new HomeFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, type);
-//        args.putString(ARG_PARAM2, param2);
+        args.putString(ARG_PARAM2, filter);
         fragment.setArguments(args);
         return fragment;
     }
@@ -85,7 +87,17 @@ public class HomeFragment extends BaseFragment {
         super.onCreate(savedInstanceState);
         adList = new ArrayList<>();
         if (getArguments() != null) {
+
             fragmentType = getArguments().getString(ARG_PARAM1);
+
+            try{
+                locationId = Integer.parseInt(getArguments().getString(ARG_PARAM2));
+            }
+            catch(Exception e)
+            {
+                locationId = -1;
+            }
+
         }
         from = 0;
         to = 10;
@@ -113,6 +125,9 @@ public class HomeFragment extends BaseFragment {
                 break;
             case CFConstants.FRAGMENT_USERADS:
                 new MyAdAsyncTask().execute();
+                break;
+            case CFConstants.FRAGMENT_LOCATION:
+                new LocationAsyncTask().execute();
                 break;
             default:
                 task = new DataAsyncTask(from, to);
@@ -368,6 +383,47 @@ public class HomeFragment extends BaseFragment {
         }
     }
 
+    private class LocationAsyncTask extends AsyncTask<String, String, String> {
+
+
+        @Override
+        protected String doInBackground(String... params) {
+
+
+            CFAdvertisementDataHandler adh = new CFAdvertisementDataHandler();
+//                adList = adh.getAdvertisements();
+
+            List<CFAdvertisement> list = new ArrayList<>();
+            if(locationId != -1) {
+                list = adh.getAdvertisementsByLocationId(locationId);
+            }
+
+
+            if (list.size() > 0) {
+                adList = list;
+            }
+            else {
+//                CFPopupHelper.showToast(getActivity().getApplicationContext(), getActivity().getString(R.string.no_user_ads));
+            }
+
+            return CFConstants.STATUS_OK;
+
+
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            if (result.equals(CFConstants.STATUS_OK)) {
+                adapter.notifyDataSetChanged();
+                pb.setVisibility(View.GONE);
+                createList(view);
+            } else {
+                CFPopupHelper.showAlertOneButton(getActivity(), "Server is not available. Please check your connection and restart the application").show();
+            }
+
+        }
+    }
+
     private class FavouriteAsyncTask extends AsyncTask<String, String, String> {
 
         @Override
@@ -419,27 +475,6 @@ public class HomeFragment extends BaseFragment {
         protected Boolean doInBackground(String... params) {
 
             CFAdvertisementDataHandler dataHandler = new CFAdvertisementDataHandler();
-
-//            if(isChecked)
-//            {
-//                boolean status = dataHandler.addFavourite(favourite);
-//
-//                if(status)
-//                {
-//                    String id = dataHandler.getFavourite(favourite.getUserId(), favourite.getAdvertisementId());
-//                    if(!id.equals(""))
-//                    {
-//                        currentFavourite = Long.parseLong(id);
-//                    }
-//                }
-//
-//                return status;
-//
-//            }
-//            else {
-//                dataHandler.deleteFavourite(favourite);
-//            }
-
             return dataHandler.deleteAdvertisement(advertisement);
         }
 
