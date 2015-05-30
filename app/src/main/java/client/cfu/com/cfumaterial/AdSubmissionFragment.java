@@ -120,6 +120,7 @@ public class AdSubmissionFragment extends BaseFragment {
         final FormEditText modelYearText = (FormEditText)view.findViewById(R.id.modelYearText);
         final EditText engineCapacityText = (EditText)view.findViewById(R.id.engineCapacityText);
         final FormEditText mileageText = (FormEditText)view.findViewById(R.id.mileageText);
+        final FormEditText priceText = (FormEditText)view.findViewById(R.id.priceText);
 
         final Spinner brandSpinner = (Spinner)view.findViewById(R.id.brand_spinner);
         final Spinner bodyTypeSpinner = (Spinner)view.findViewById(R.id.bodyType_spinner);
@@ -159,6 +160,8 @@ public class AdSubmissionFragment extends BaseFragment {
                         (int)(conditionSpinner.getSelectedItemId()) !=0 &&
                         (int)(vehicleTypeSpinner.getSelectedItemId()) !=0 ;
 
+                validSpinners = true;
+
                 if(!validSpinners)
                 {
                     CFPopupHelper.showToast(getActivity().getApplicationContext(), getActivity().getString(R.string.check_mandatory_fields));
@@ -178,13 +181,51 @@ public class AdSubmissionFragment extends BaseFragment {
                     ad.setEngineCapacity(Integer.parseInt(engineCapacityText.getText().toString()));
                     ad.setMilage(Long.parseLong(mileageText.getText().toString()));
                     ad.setUserId((int) CFUserSessionManager.getUserId(getActivity().getApplicationContext()));
+                    ad.setPrice(Long.parseLong(priceText.getText().toString()));
 
-                    ad.setBrandId((int)brandSpinner.getSelectedItemId());
-                    ad.setBodyTypeId((int)(bodyTypeSpinner.getSelectedItemId()));
-                    ad.setTransmissionTypeId((int)(transmissionSpinner.getSelectedItemId()));
-                    ad.setFuelTypeId((int)(fuelTypeSpinner.getSelectedItemId()));
-                    ad.setConditionId((int)conditionSpinner.getSelectedItemId());
-                    ad.setVehicleTypeId((int)(vehicleTypeSpinner.getSelectedItemId()));
+
+                    if(brandSpinner.getSelectedItemId() == 0 ) {
+                        ad.setBrandId(1);
+                    }
+                    else {
+                        ad.setBrandId((int)brandSpinner.getSelectedItemId());
+                    }
+                    if(bodyTypeSpinner.getSelectedItemId() == 0 ) {
+                        ad.setBodyTypeId(1);
+                    }
+                    else {
+                        ad.setBodyTypeId((int)bodyTypeSpinner.getSelectedItemId());
+                    }
+                    if(transmissionSpinner.getSelectedItemId() == 0 ) {
+                        ad.setTransmissionTypeId(1);
+                    }
+                    else {
+                        ad.setTransmissionTypeId((int)transmissionSpinner.getSelectedItemId());
+                    }
+                    if(fuelTypeSpinner.getSelectedItemId() == 0 ) {
+                        ad.setFuelTypeId(1);
+                    }
+                    else {
+                        ad.setFuelTypeId((int)fuelTypeSpinner.getSelectedItemId());
+                    }
+                    if(conditionSpinner.getSelectedItemId() == 0 ) {
+                        ad.setConditionId(1);
+                    }
+                    else {
+                        ad.setConditionId((int)conditionSpinner.getSelectedItemId());
+                    }
+                    if(vehicleTypeSpinner.getSelectedItemId() == 0 ) {
+                        ad.setVehicleTypeId(1);
+                    }
+                    else {
+                        ad.setVehicleTypeId((int)vehicleTypeSpinner.getSelectedItemId());
+                    }
+
+//                    ad.setBodyTypeId((int)(bodyTypeSpinner.getSelectedItemId()));
+//                    ad.setTransmissionTypeId((int)(transmissionSpinner.getSelectedItemId()));
+//                    ad.setFuelTypeId((int)(fuelTypeSpinner.getSelectedItemId()));
+//                    ad.setConditionId((int)conditionSpinner.getSelectedItemId());
+//                    ad.setVehicleTypeId((int)(vehicleTypeSpinner.getSelectedItemId()));
 
 
                     if(bp!= null){
